@@ -9,6 +9,7 @@ import Auth from "@/pages/auth";
 import Discover from "@/pages/discover";
 import Profile from "@/pages/profile";
 import NotFound from "@/pages/not-found";
+import MovieDetail from "@/pages/movie-detail";
 
 function Router() {
   return (
@@ -17,6 +18,9 @@ function Router() {
       <Route path="/auth" component={Auth} />
       <Route path="/discover" component={Discover} />
       <Route path="/profile" component={Profile} />
+      <Route path="/movie" component={MovieDetail} />
+      <Route path="/community" component={Home} />
+      <Route path="/kids" component={Home} />
       <Route component={NotFound} />
     </Switch>
   );
