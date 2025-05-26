@@ -1,0 +1,279 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 240 10% 3.9%; /* #0F0F23 - Dark background */
+  --foreground: 0 0% 98%; /* #FAFAFA - Light text */
+  --muted: 240 3.7% 15.9%; /* #1A1A2E - Muted background */
+  --muted-foreground: 240 5% 64.9%; /* #64748B - Muted text */
+  --popover: 240 10% 3.9%; /* #0F0F23 - Popover background */
+  --popover-foreground: 0 0% 98%; /* #FAFAFA - Popover text */
+  --card: 240 10% 3.9%; /* #0F0F23 - Card background */
+  --card-foreground: 0 0% 98%; /* #FAFAFA - Card text */
+  --border: 263 30% 30%; /* #6B46C1 - Purple border */
+  --input: 240 3.7% 15.9%; /* #1A1A2E - Input background */
+  --primary: 263 70% 50%; /* #7C3AED - Deep purple primary */
+  --primary-foreground: 0 0% 98%; /* #FAFAFA - Primary text */
+  --secondary: 240 3.7% 15.9%; /* #1A1A2E - Secondary background */
+  --secondary-foreground: 0 0% 98%; /* #FAFAFA - Secondary text */
+  --accent: 45 93% 47%; /* #F59E0B - Gold accent */
+  --accent-foreground: 240 10% 3.9%; /* #0F0F23 - Accent text */
+  --destructive: 0 62.8% 30.6%; /* #DC2626 - Red destructive */
+  --destructive-foreground: 0 0% 98%; /* #FAFAFA - Destructive text */
+  --ring: 263 70% 50%; /* #7C3AED - Ring color */
+  --radius: 0.5rem;
+  
+  /* Custom TeleHub colors */
+  --purple-900: 263 70% 50%; /* #7C3AED */
+  --purple-800: 263 60% 60%; /* #6B46C1 */
+  --gold-500: 45 93% 47%; /* #F59E0B */
+  --gold-400: 45 93% 55%; /* #FCD34D */
+  --dark-900: 240 10% 3.9%; /* #0F0F23 */
+  --dark-800: 240 3.7% 15.9%; /* #1A1A2E */
+}
+
+.dark {
+  --background: 240 10% 3.9%; /* #0F0F23 */
+  --foreground: 0 0% 98%; /* #FAFAFA */
+  --muted: 240 3.7% 15.9%; /* #1A1A2E */
+  --muted-foreground: 240 5% 64.9%; /* #64748B */
+  --popover: 240 10% 3.9%; /* #0F0F23 */
+  --popover-foreground: 0 0% 98%; /* #FAFAFA */
+  --card: 240 10% 3.9%; /* #0F0F23 */
+  --card-foreground: 0 0% 98%; /* #FAFAFA */
+  --border: 263 30% 30%; /* #6B46C1 */
+  --input: 240 3.7% 15.9%; /* #1A1A2E */
+  --primary: 263 70% 50%; /* #7C3AED */
+  --primary-foreground: 0 0% 98%; /* #FAFAFA */
+  --secondary: 240 3.7% 15.9%; /* #1A1A2E */
+  --secondary-foreground: 0 0% 98%; /* #FAFAFA */
+  --accent: 45 93% 47%; /* #F59E0B */
+  --accent-foreground: 240 10% 3.9%; /* #0F0F23 */
+  --destructive: 0 62.8% 30.6%; /* #DC2626 */
+  --destructive-foreground: 0 0% 98%; /* #FAFAFA */
+  --ring: 263 70% 50%; /* #7C3AED */
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    background: hsl(var(--dark-900));
+    color: hsl(var(--foreground));
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+@layer components {
+  .cinematic-gradient {
+    background: linear-gradient(135deg, hsl(var(--dark-900)) 0%, hsl(var(--purple-900)) 50%, hsl(var(--dark-900)) 100%);
+  }
+  
+  .gold-gradient {
+    background: linear-gradient(135deg, hsl(var(--gold-500)) 0%, hsl(var(--gold-400)) 100%);
+  }
+  
+  .purple-gradient {
+    background: linear-gradient(135deg, hsl(var(--purple-800)) 0%, hsl(var(--purple-900)) 100%);
+  }
+  
+  .movie-card-hover {
+    transition: all 0.3s ease;
+  }
+  
+  .movie-card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  }
+  
+  .film-grain {
+    position: relative;
+  }
+  
+  .film-grain::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      radial-gradient(circle at 20% 80%, transparent 50%, rgba(120, 119, 198, 0.3) 100%),
+      radial-gradient(circle at 80% 20%, transparent 50%, rgba(255, 255, 255, 0.1) 100%),
+      radial-gradient(circle at 40% 40%, transparent 50%, rgba(120, 119, 198, 0.2) 100%);
+    pointer-events: none;
+    opacity: 0.6;
+  }
+  
+  .text-gradient-gold {
+    background: linear-gradient(135deg, hsl(var(--gold-500)) 0%, hsl(var(--gold-400)) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .nav-backdrop {
+    backdrop-filter: blur(16px);
+    background: linear-gradient(135deg, hsl(var(--dark-900) / 0.95) 0%, hsl(var(--purple-900) / 0.95) 100%);
+  }
+
+  /* Cinematic button styles */
+  .btn-cinematic {
+    background: linear-gradient(135deg, hsl(var(--purple-800)) 0%, hsl(var(--purple-900)) 100%);
+    color: white;
+    border: none;
+    transition: all 0.3s ease;
+    transform: perspective(1px) translateZ(0);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+  }
+
+  .btn-cinematic:hover {
+    background: linear-gradient(135deg, hsl(var(--purple-800) / 0.9) 0%, hsl(var(--purple-900) / 0.9) 100%);
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(124, 58, 237, 0.3);
+  }
+
+  .btn-gold {
+    background: linear-gradient(135deg, hsl(var(--gold-500)) 0%, hsl(var(--gold-400)) 100%);
+    color: hsl(var(--dark-900));
+    border: 2px solid hsl(var(--gold-500));
+    transition: all 0.3s ease;
+  }
+
+  .btn-gold:hover {
+    background: transparent;
+    color: hsl(var(--gold-500));
+    box-shadow: 0 0 15px hsl(var(--gold-500) / 0.5);
+  }
+
+  /* Movie poster styles */
+  .movie-poster-placeholder {
+    background: linear-gradient(135deg, hsl(var(--purple-800)) 0%, hsl(var(--purple-900)) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    text-align: center;
+    padding: 1rem;
+  }
+
+  /* Enhanced shadows for depth */
+  .shadow-cinematic {
+    box-shadow: 
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06),
+      0 0 0 1px rgba(124, 58, 237, 0.1);
+  }
+
+  .shadow-cinematic-lg {
+    box-shadow: 
+      0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05),
+      0 0 0 1px rgba(124, 58, 237, 0.1);
+  }
+
+  /* Glowing effects */
+  .glow-gold {
+    box-shadow: 0 0 20px hsl(var(--gold-500) / 0.3);
+  }
+
+  .glow-purple {
+    box-shadow: 0 0 20px hsl(var(--purple-800) / 0.3);
+  }
+}
+
+@layer utilities {
+  .aspect-poster {
+    aspect-ratio: 2/3;
+  }
+  
+  .aspect-backdrop {
+    aspect-ratio: 16/9;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Text utilities */
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  .text-shadow-lg {
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
+  }
+
+  /* Animation utilities */
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-in-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.6s ease-out;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.3s ease-out;
+  }
+}
+
+/* Keyframe animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--dark-800));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--purple-800));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--purple-900));
+}
