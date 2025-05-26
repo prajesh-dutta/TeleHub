@@ -7,6 +7,7 @@ import { Star, Play } from "lucide-react";
 interface MovieCardProps {
   movie: Movie;
   compact?: boolean;
+  onPlay?: (movie: Movie) => void;
 }
 
 export default function MovieCard({ movie, compact = false }: MovieCardProps) {
