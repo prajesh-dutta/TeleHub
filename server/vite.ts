@@ -42,12 +42,17 @@ export async function setupVite(app: Express, server: Server) {
 
   app.use(vite.middlewares);
   
-  // Only handle non-API routes with the SPA fallback
+  // Only handle HTML page requests with the SPA fallback, not assets
   app.use("*", async (req, res, next) => {
     const url = req.originalUrl;
 
     // Skip API routes - let them be handled by the API middleware
     if (url.startsWith('/api/')) {
+      return next();
+    }
+
+    // Skip Vite assets - let Vite middleware handle them
+    if (url.startsWith('/@') || url.includes('.') && !url.endsWith('/')) {
       return next();
     }
 
