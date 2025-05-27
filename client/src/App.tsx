@@ -10,12 +10,14 @@ import Discover from "@/pages/discover";
 import Profile from "@/pages/profile";
 import NotFound from "@/pages/not-found";
 import MovieDetail from "@/pages/movie-detail";
+import GoogleCallback from "@/pages/google-callback";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/auth" component={Auth} />
+      <Route path="/auth/google/callback" component={GoogleCallback} />
       <Route path="/discover" component={Discover} />
       <Route path="/profile" component={Profile} />
       <Route path="/movie" component={MovieDetail} />
@@ -31,7 +33,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <TooltipProvider>
-          <div className="min-h-screen bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900">
+          <div className="min-h-screen bg-gray-50">
             <Toaster />
             <Router />
           </div>

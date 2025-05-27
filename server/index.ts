@@ -1,6 +1,20 @@
 import express, { type Request, Response, NextFunction } from "express";
-import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// Get the directory name for ES modules
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Load environment variables FIRST
+dotenv.config({ path: path.join(__dirname, '../.env') });
+
+// Debug: Check if environment variables are loaded
+console.log('🔍 Environment variables loaded:');
+console.log('- GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID ? 'SET' : 'NOT SET');
+console.log('- PORT:', process.env.PORT || '5002');
+console.log('- NODE_ENV:', process.env.NODE_ENV || 'development');
 
 const app = express();
 app.use(express.json());
@@ -37,6 +51,8 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Import routes after environment variables are loaded
+  const { registerRoutes } = await import("./routes");
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -56,15 +72,13 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on port 5000
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = 5000;
+  // Use the PORT from environment variables, fallback to 5000
+  const port = parseInt(process.env.PORT || '5000');
   server.listen({
     port,
     host: "0.0.0.0",
     reusePort: true,
   }, () => {
-    log(`serving on port ${port}`);
+    log(`🚀 TeleHub server running on port ${port}`);
   });
 })();

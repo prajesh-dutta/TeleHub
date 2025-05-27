@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
-import { User, Film, Star, Calendar, Heart, Bookmark } from "lucide-react";
+import { User, Film, Star, Users, Calendar, Heart, Bookmark } from "lucide-react";
 
 export default function Profile() {
   const { user, logout } = useAuth();
@@ -103,7 +103,7 @@ export default function Profile() {
               </CardHeader>
               <CardContent>
                 <div className="text-4xl font-bold text-gray-900 mb-2">{favorites?.length || 0}</div>
-                <p className="text-gray-600 text-sm">Movies you love</p>
+                <p className="text-gray-500 text-sm">Movies you love</p>
               </CardContent>
             </Card>
             
@@ -116,20 +116,20 @@ export default function Profile() {
               </CardHeader>
               <CardContent>
                 <div className="text-4xl font-bold text-gray-900 mb-2">{watchlist?.length || 0}</div>
-                <p className="text-gray-600 text-sm">Movies to watch</p>
+                <p className="text-gray-500 text-sm">Movies to watch</p>
               </CardContent>
             </Card>
             
             <Card className="bg-white border-gray-200 shadow-sm">
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center text-gray-800">
-                  <Film className="w-6 h-6 mr-3 text-purple-500" />
+                  <Film className="w-6 h-6 mr-3 text-green-500" />
                   Watch Time
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-4xl font-bold text-gray-900 mb-2">24h</div>
-                <p className="text-gray-600 text-sm">Total watch time</p>
+                <p className="text-gray-500 text-sm">Movies watched</p>
               </CardContent>
             </Card>
           </div>
@@ -142,7 +142,7 @@ export default function Profile() {
                 className="flex items-center gap-3 data-[state=active]:bg-blue-600 data-[state=active]:text-white"
               >
                 <Heart className="w-5 h-5" />
-                My Favorites
+                Favorites
               </TabsTrigger>
               <TabsTrigger 
                 value="watchlist" 
@@ -170,12 +170,12 @@ export default function Profile() {
               ) : (
                 <Card className="bg-white border-gray-200 shadow-sm">
                   <CardContent className="text-center py-16">
-                    <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
+                    <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-xl flex items-center justify-center">
                       <Heart className="w-12 h-12 text-gray-400" />
                     </div>
                     <h3 className="text-2xl font-semibold text-gray-800 mb-3">No favorites yet</h3>
                     <p className="text-gray-600 mb-6 max-w-md mx-auto leading-relaxed">
-                      Start exploring movies and add your favorites to build your collection
+                      Start exploring movies and add your favorites to build your personal collection
                     </p>
                     <Button 
                       onClick={() => setLocation('/discover')} 
@@ -191,7 +191,7 @@ export default function Profile() {
             <TabsContent value="watchlist" className="mt-12">
               <div className="mb-8 text-center">
                 <h3 className="text-3xl font-bold text-gray-800 mb-3">Watch Later</h3>
-                <p className="text-gray-600">Movies saved for later viewing</p>
+                <p className="text-gray-600">Movies saved for your next viewing session</p>
               </div>
               
               {watchlistLoading ? (
@@ -205,12 +205,12 @@ export default function Profile() {
               ) : (
                 <Card className="bg-white border-gray-200 shadow-sm">
                   <CardContent className="text-center py-16">
-                    <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
+                    <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-xl flex items-center justify-center">
                       <Bookmark className="w-12 h-12 text-gray-400" />
                     </div>
-                    <h3 className="text-2xl font-semibold text-gray-800 mb-3">Watchlist is empty</h3>
+                    <h3 className="text-2xl font-semibold text-gray-800 mb-3">No movies in watchlist</h3>
                     <p className="text-gray-600 mb-6 max-w-md mx-auto leading-relaxed">
-                      Add movies to your watchlist to keep track of what you want to watch
+                      Add movies you want to watch later to your watchlist
                     </p>
                     <Button 
                       onClick={() => setLocation('/discover')} 

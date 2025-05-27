@@ -14,9 +14,47 @@ const userSchema = new mongoose.Schema({
     bio: String,
     favoriteGenres: [String],
     watchlist: [String], // Movie IDs
+    favorites: [String], // Movie IDs - separate from watchlist
     followers: [String], // User IDs
     following: [String], // User IDs
+    watchHistory: [{
+      movieId: String,
+      watchedAt: { type: Date, default: Date.now },
+      progress: { type: Number, default: 0 } // percentage watched
+    }]
   },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+// Movie Schema for MongoDB
+const movieSchema = new mongoose.Schema({
+  id: { type: String, required: true, unique: true },
+  title: { type: String, required: true },
+  overview: String,
+  director: String,
+  year: Number,
+  runtime: Number,
+  posterUrl: String,
+  backdropUrl: String,
+  videoUrl: String, // S3 URL for streaming
+  trailerUrl: String,
+  genres: [String],
+  language: { type: String, default: 'english' },
+  country: { type: String, default: 'usa' },
+  rating: { type: Number, default: 0 },
+  isPublicDomain: { type: Boolean, default: true },
+  streamingPlatform: { type: String, default: 'telehub' },
+  tags: [String],
+  cast: [String],
+  crew: [{
+    name: String,
+    role: String
+  }],
+  awards: [String],
+  imdbId: String,
+  tmdbId: String,
+  featured: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });
@@ -56,6 +94,7 @@ const watchPartySchema = new mongoose.Schema({
 
 // Create models
 export const User = mongoose.model('User', userSchema);
+export const Movie = mongoose.model('Movie', movieSchema);
 export const Review = mongoose.model('Review', reviewSchema);
 export const Collection = mongoose.model('Collection', collectionSchema);
 export const WatchParty = mongoose.model('WatchParty', watchPartySchema);
@@ -195,5 +234,113 @@ export class MongoStorage {
   async deleteWatchParty(id: string) {
     const result = await WatchParty.findByIdAndDelete(id);
     return !!result;
+  }
+
+  // Movie operations
+  async getMovie(id: string) {
+    return await Movie.findOne({ id });
+  }
+
+  async getMovies(limit = 20, offset = 0) {
+    return await Movie.find().skip(offset).limit(limit);
+  }
+
+  async getMoviesByGenre(genre: string, limit = 20) {
+    return await Movie.find({ genres: { $in: [genre] } }).limit(limit);
+  }
+
+  async searchMovies(query: string, limit = 20) {
+    return await Movie.find({
+      $or: [
+        { title: { $regex: query, $options: 'i' } },
+        { director: { $regex: query, $options: 'i' } },
+        { tags: { $in: [new RegExp(query, 'i')] } }
+      ]
+    }).limit(limit);
+  }
+
+  async getFeaturedMovies(limit = 10) {
+    return await Movie.find({ featured: true }).limit(limit);
+  }
+
+  async getPublicDomainMovies(limit = 20) {
+    return await Movie.find({ isPublicDomain: true }).limit(limit);
+  }
+
+  async createMovie(movieData: any) {
+    const movie = new Movie(movieData);
+    return await movie.save();
+  }
+
+  async updateMovie(id: string, updates: any) {
+    return await Movie.findOneAndUpdate({ id }, { ...updates, updatedAt: new Date() }, { new: true });
+  }
+
+  async deleteMovie(id: string) {
+    const result = await Movie.findOneAndDelete({ id });
+    return !!result;
+  }
+
+  // Favorites and Watchlist operations
+  async addToFavorites(userId: string, movieId: string) {
+    return await User.findByIdAndUpdate(
+      userId,
+      { $addToSet: { 'profile.favorites': movieId } },
+      { new: true }
+    );
+  }
+
+  async removeFromFavorites(userId: string, movieId: string) {
+    return await User.findByIdAndUpdate(
+      userId,
+      { $pull: { 'profile.favorites': movieId } },
+      { new: true }
+    );
+  }
+
+  async addToWatchlist(userId: string, movieId: string) {
+    return await User.findByIdAndUpdate(
+      userId,
+      { $addToSet: { 'profile.watchlist': movieId } },
+      { new: true }
+    );
+  }
+
+  async removeFromWatchlist(userId: string, movieId: string) {
+    return await User.findByIdAndUpdate(
+      userId,
+      { $pull: { 'profile.watchlist': movieId } },
+      { new: true }
+    );
+  }
+
+  async getUserFavorites(userId: string) {
+    const user = await User.findById(userId);
+    if (!user?.profile?.favorites) return [];
+    
+    return await Movie.find({ id: { $in: user.profile.favorites } });
+  }
+
+  async getUserWatchlist(userId: string) {
+    const user = await User.findById(userId);
+    if (!user?.profile?.watchlist) return [];
+    
+    return await Movie.find({ id: { $in: user.profile.watchlist } });
+  }
+
+  async updateWatchHistory(userId: string, movieId: string, progress: number) {
+    return await User.findByIdAndUpdate(
+      userId,
+      {
+        $push: {
+          'profile.watchHistory': {
+            movieId,
+            watchedAt: new Date(),
+            progress
+          }
+        }
+      },
+      { new: true }
+    );
   }
 }

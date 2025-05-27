@@ -58,9 +58,8 @@ class MoviesService {
 
     return response.json();
   }
-
-  async getStreamingUrl(movieId: string): Promise<{ url: string }> {
-    const response = await fetch(`${this.baseUrl}/movies/${movieId}/stream`, {
+  async getStreamingUrl(movieId: string, quality: string = '720p'): Promise<{ url: string }> {
+    const response = await fetch(`/api/streaming/secure-url/${movieId}/${quality}`, {
       headers: {
         'Content-Type': 'application/json',
         ...getAuthHeaders(),
@@ -71,7 +70,24 @@ class MoviesService {
       throw new Error('Failed to get streaming URL');
     }
 
-    return response.json();
+    const data = await response.json();
+    return { url: data.streamingUrl };
+  }
+
+  async getAvailableQualities(movieId: string): Promise<string[]> {
+    const response = await fetch(`/api/streaming/qualities/${movieId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders(),
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to get available qualities');
+    }
+
+    const data = await response.json();
+    return data.qualities || ['720p'];
   }
 
   async getFavorites(): Promise<Movie[]> {
@@ -191,7 +207,6 @@ class MoviesService {
 
     return response.json();
   }
-
   async getClassicsMovies(): Promise<Movie[]> {
     return this.getMovies({ 
       genre: 'Classic', 
@@ -203,7 +218,7 @@ class MoviesService {
 
   async getDirectorMovies(): Promise<Movie[]> {
     return this.getMovies({ 
-      query: 'Classic Director',
+      genre: 'Featured Director',
       sortBy: 'releaseDate', 
       sortOrder: 'asc',
       limit: 20
@@ -212,129 +227,3 @@ class MoviesService {
 }
 
 export const moviesService = new MoviesService();
-
-// Sample movie data
-const sampleMovies: Movie[] = [
-  {
-    id: "1",
-    title: "A Trip to the Moon",
-    overview: "Professor Barbenfouillis and five of his colleagues from the Astronomical Club travel to the moon by being shot in a capsule from a giant cannon.",
-    posterPath: "/trip-to-moon.jpg",
-    releaseDate: "1902-09-01",
-    runtime: 14,
-    genres: ["Adventure", "Comedy", "Fantasy"],
-    rating: 8.1,
-    voteCount: 15000,
-    isPublicDomain: true,
-    streamingLinks: [
-      { platform: "Internet Archive", url: "https://archive.org/details/le-voyage-dans-la-lune" }
-    ],
-    communityRating: 8.0,
-    tags: ["Georges Méliès", "silent film", "early cinema"]
-  },
-  {
-    id: "2",
-    title: "The Cabinet of Dr. Caligari",
-    overview: "Hypnotist Dr. Caligari uses a somnambulist, Cesare, to commit murders.",
-    posterPath: "/dr-caligari.jpg",
-    releaseDate: "1920-02-26",
-    runtime: 76,
-    genres: ["Horror", "Thriller"],
-    rating: 8.0,
-    voteCount: 32000,
-    isPublicDomain: true,
-    streamingLinks: [
-      { platform: "Internet Archive", url: "https://archive.org/details/the-cabinet-of-dr-caligari" }
-    ],
-    communityRating: 8.2,
-    tags: ["german expressionism", "silent film", "horror"]
-  },
-  {
-    id: "3",
-    title: "Nosferatu",
-    overview: "Vampire Count Orlok expresses interest in a new residence and real estate agent Hutter's wife.",
-    posterPath: "/nosferatu.jpg",
-    releaseDate: "1922-03-04",
-    runtime: 94,
-    genres: ["Horror", "Fantasy"],
-    rating: 7.9,
-    voteCount: 28000,
-    isPublicDomain: true,
-    streamingLinks: [
-      { platform: "Internet Archive", url: "https://archive.org/details/nosferatu-1922" }
-    overview: "The Tramp goes to the Klondike in search of gold and finds it and more.",
-    posterPath: "/gold-rush.jpg",
-    releaseDate: "1925-06-26", 
-    runtime: 95,
-    genres: ["Comedy", "Adventure"],
-    rating: 8.2,
-    voteCount: 42000,
-    isPublicDomain: true,
-    streamingLinks: [
-      { platform: "Internet Archive", url: "https://archive.org/details/the-gold-rush" }
-    ],
-    communityRating: 8.3,
-    tags: ["charlie chaplin", "silent comedy", "classic"]
-  },
-  {
-    id: "5",
-    title: "Battleship Potemkin",
-    overview: "In the midst of the Russian Revolution of 1905, the crew of the battleship Potemkin mutiny against the brutal, tyrannical regime of the vessel's officers.",
-    posterPath: "/battleship-potemkin.jpg",
-    releaseDate: "1925-12-21",
-    runtime: 75,
-    genres: ["Drama", "History"],
-    rating: 8.0,
-    voteCount: 35000,
-    isPublicDomain: true,
-    streamingLinks: [
-      { platform: "Internet Archive", url: "https://archive.org/details/battleship-potemkin" }
-    ],
-    communityRating: 8.1,
-    tags: ["soviet montage", "silent film", "revolution"]
-  },
-  {
-    id: "6",
-    title: "Safety Last!",
-    overview: "A boy leaves his small country town and heads to the big city to get a job. As soon as he makes it big his sweetheart will join him and marry him.",
-    posterPath: "/safety-last.jpg",
-    releaseDate: "1923-04-01",
-    runtime: 70,
-    genres: ["Comedy", "Romance"],
-    rating: 8.1,
-    voteCount: 28000,
-    isPublicDomain: true,
-    streamingLinks: [
-      { platform: "Internet Archive", url: "https://archive.org/details/safety-last" }
-    ],
-    communityRating: 8.2,
-    tags: ["harold lloyd", "silent comedy", "clock tower"]
-  }
-];
-
-// Movie data management functions
-export const getMoviesByGenre = (genre: string, movies: Movie[] = sampleMovies): Movie[] => {
-  return movies.filter(movie => 
-    movie.genres.some(g => g.toLowerCase().includes(genre.toLowerCase()))
-  );
-};
-
-export const getPublicDomainMovies = (movies: Movie[] = sampleMovies): Movie[] => {
-  return movies.filter(movie => movie.isPublicDomain);
-};
-
-export const searchMovies = (query: string, movies: Movie[] = sampleMovies): Movie[] => {
-  const lowerQuery = query.toLowerCase();
-  return movies.filter(movie =>
-    movie.title.toLowerCase().includes(lowerQuery) ||
-    movie.overview.toLowerCase().includes(lowerQuery) ||
-    movie.genres.some(genre => genre.toLowerCase().includes(lowerQuery)) ||
-    movie.tags.some(tag => tag.toLowerCase().includes(lowerQuery))
-  );
-};
-
-export const getFeaturedMovies = (limit: number = 6, movies: Movie[] = sampleMovies): Movie[] => {
-  return movies
-    .sort((a, b) => b.communityRating - a.communityRating)
-    .slice(0, limit);
-};

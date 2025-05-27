@@ -61,27 +61,26 @@ export interface IStorage {
   updateWatchParty(id: string, updates: Partial<WatchParty>): Promise<WatchParty | undefined>;
   deleteWatchParty(id: string): Promise<boolean>;
 
-  // Initialize with Bengali cinema content
-  initializeBengaliCinema(): Promise<void>;
+  // Initialize with classic cinema content
+  initializeClassicCinema(): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
   constructor() {
-    this.initializeBengaliCinema();
+    this.initializeClassicCinema();
   }
 
-  async initializeBengaliCinema(): Promise<void> {
+  async initializeClassicCinema(): Promise<void> {
     try {
       // Check if movies already exist
       const existingMovies = await db.select().from(movies).limit(1);
       if (existingMovies.length > 0) return;
 
-      // Bengali Classic Films from Archive.org and other public sources
-      const bengaliClassics: InsertMovie[] = [
+      // Classic Films from Archive.org and other public sources
+      const classicMovies: InsertMovie[] = [
         {
           id: "pather-panchali-1955",
           title: "Pather Panchali",
-          bengaliTitle: "পথের পাঁচালী",
           overview: "The first film in Satyajit Ray's Apu Trilogy, following a poor family in rural Bengal. This masterpiece captures the beauty and hardship of village life with profound humanity.",
           director: "Satyajit Ray",
           year: 1955,
@@ -91,17 +90,16 @@ export class DatabaseStorage implements IStorage {
           videoUrl: "https://archive.org/download/PatherPanchali1955/Pather%20Panchali%20%281955%29.mp4",
           trailerUrl: "https://archive.org/download/PatherPanchaliTrailer/trailer.mp4",
           genres: ["Drama", "Family", "Coming of Age"],
-          language: "bengali",
+          language: "hindi",
           country: "india",
           rating: 8.4,
           isPublicDomain: true,
           streamingPlatform: "archive",
-          tags: ["Satyajit Ray", "Apu Trilogy", "Rural Bengal", "Neorealism", "Cannes Winner"]
+          tags: ["Satyajit Ray", "Apu Trilogy", "Rural India", "Neorealism", "Cannes Winner"]
         },
         {
           id: "aparajito-1956", 
           title: "Aparajito",
-          bengaliTitle: "অপরাজিত",
           overview: "The second film in the Apu Trilogy, following Apu's journey from childhood to adolescence as his family moves from village to city.",
           director: "Satyajit Ray",
           year: 1956,
@@ -111,7 +109,7 @@ export class DatabaseStorage implements IStorage {
           videoUrl: "https://archive.org/download/Aparajito1956/Aparajito%20%281956%29.mp4",
           trailerUrl: "https://archive.org/download/AparajitoTrailer/trailer.mp4",
           genres: ["Drama", "Coming of Age", "Family"],
-          language: "bengali",
+          language: "hindi",
           country: "india", 
           rating: 8.2,
           isPublicDomain: true,
@@ -121,7 +119,6 @@ export class DatabaseStorage implements IStorage {
         {
           id: "apur-sansar-1959",
           title: "Apur Sansar",
-          bengaliTitle: "অপুর সংসার",
           overview: "The final film in the Apu Trilogy, showing Apu's adult life as he struggles with love, loss, and responsibility.",
           director: "Satyajit Ray",
           year: 1959,
@@ -131,7 +128,7 @@ export class DatabaseStorage implements IStorage {
           videoUrl: "https://archive.org/download/ApurSansar1959/Apur%20Sansar%20%281959%29.mp4",
           trailerUrl: "https://archive.org/download/ApurSansarTrailer/trailer.mp4",
           genres: ["Drama", "Romance", "Family"],
-          language: "bengali",
+          language: "hindi",
           country: "india",
           rating: 8.3,
           isPublicDomain: true,
@@ -141,7 +138,6 @@ export class DatabaseStorage implements IStorage {
         {
           id: "charulata-1964",
           title: "Charulata",
-          bengaliTitle: "চারুলতা",
           overview: "Satyajit Ray's exploration of a lonely housewife's emotional awakening in 19th century Bengal. Often considered Ray's masterpiece.",
           director: "Satyajit Ray",
           year: 1964,
@@ -151,7 +147,7 @@ export class DatabaseStorage implements IStorage {
           videoUrl: "https://archive.org/download/Charulata1964/Charulata%20%281964%29.mp4",
           trailerUrl: "https://archive.org/download/CharulataTrailer/trailer.mp4",
           genres: ["Drama", "Romance", "Period"],
-          language: "bengali",
+          language: "hindi",
           country: "india",
           rating: 8.5,
           isPublicDomain: true,
@@ -161,7 +157,6 @@ export class DatabaseStorage implements IStorage {
         {
           id: "mahanagar-1963",
           title: "Mahanagar",
-          bengaliTitle: "মহানগর",
           overview: "A progressive film about a woman who goes to work to support her family, challenging traditional gender roles in 1960s Calcutta.",
           director: "Satyajit Ray",
           year: 1963,
@@ -171,7 +166,7 @@ export class DatabaseStorage implements IStorage {
           videoUrl: "https://archive.org/download/Mahanagar1963/Mahanagar%20%281963%29.mp4",
           trailerUrl: "https://archive.org/download/MahanagarTrailer/trailer.mp4",
           genres: ["Drama", "Social", "Urban"],
-          language: "bengali",
+          language: "hindi",
           country: "india",
           rating: 8.1,
           isPublicDomain: true,
@@ -181,7 +176,6 @@ export class DatabaseStorage implements IStorage {
         {
           id: "jalsaghar-1958",
           title: "Jalsaghar",
-          bengaliTitle: "জলসাঘর",
           overview: "The story of a decadent zamindar's obsession with music and his gradual decline, featuring beautiful classical Indian music.",
           director: "Satyajit Ray",
           year: 1958,
@@ -191,7 +185,7 @@ export class DatabaseStorage implements IStorage {
           videoUrl: "https://archive.org/download/Jalsaghar1958/Jalsaghar%20%281958%29.mp4",
           trailerUrl: "https://archive.org/download/JalsagharTrailer/trailer.mp4",
           genres: ["Drama", "Music", "Period"],
-          language: "bengali",
+          language: "hindi",
           country: "india",
           rating: 8.0,
           isPublicDomain: true,
@@ -201,7 +195,6 @@ export class DatabaseStorage implements IStorage {
         {
           id: "devi-1960",
           title: "Devi",
-          bengaliTitle: "দেবী",
           overview: "A powerful drama about religious fanaticism and its impact on a young woman believed to be a goddess incarnate.",
           director: "Satyajit Ray",
           year: 1960,
@@ -211,7 +204,7 @@ export class DatabaseStorage implements IStorage {
           videoUrl: "https://archive.org/download/Devi1960/Devi%20%281960%29.mp4",
           trailerUrl: "https://archive.org/download/DeviTrailer/trailer.mp4",
           genres: ["Drama", "Religious", "Psychological"],
-          language: "bengali",
+          language: "hindi",
           country: "india",
           rating: 7.9,
           isPublicDomain: true,
@@ -221,7 +214,6 @@ export class DatabaseStorage implements IStorage {
         {
           id: "teen-kanya-1961",
           title: "Teen Kanya",
-          bengaliTitle: "তিন কন্যা",
           overview: "Three short stories by Rabindranath Tagore adapted by Ray, exploring themes of love, sacrifice, and social change.",
           director: "Satyajit Ray",
           year: 1961,
@@ -231,7 +223,7 @@ export class DatabaseStorage implements IStorage {
           videoUrl: "https://archive.org/download/TeenKanya1961/Teen%20Kanya%20%281961%29.mp4",
           trailerUrl: "https://archive.org/download/TeenKanyaTrailer/trailer.mp4",
           genres: ["Drama", "Anthology", "Romance"],
-          language: "bengali",
+          language: "hindi",
           country: "india",
           rating: 7.8,
           isPublicDomain: true,
@@ -241,13 +233,13 @@ export class DatabaseStorage implements IStorage {
       ];
 
       // Insert movies into database
-      for (const movie of bengaliClassics) {
+      for (const movie of classicMovies) {
         await db.insert(movies).values(movie).onConflictDoNothing();
       }
 
-      console.log("Bengali cinema collection initialized successfully!");
+      console.log("Classic cinema collection initialized successfully!");
     } catch (error) {
-      console.error("Error initializing Bengali cinema:", error);
+      console.error("Error initializing classic cinema:", error);
     }
   }
 
@@ -334,7 +326,6 @@ export class DatabaseStorage implements IStorage {
     return allMovies
       .filter(movie => 
         movie.title.toLowerCase().includes(query.toLowerCase()) ||
-        movie.bengaliTitle?.toLowerCase().includes(query.toLowerCase()) ||
         movie.overview?.toLowerCase().includes(query.toLowerCase()) ||
         movie.director?.toLowerCase().includes(query.toLowerCase()) ||
         movie.tags?.some(tag => tag.toLowerCase().includes(query.toLowerCase()))

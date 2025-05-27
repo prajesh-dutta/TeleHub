@@ -12,10 +12,19 @@ export interface AuthUser {
     avatar?: string;
     bio?: string;
     favoriteGenres?: string[];
-    watchlist?: string[];
-    followers?: string[];
-    following?: string[];
   };
+  preferences?: {
+    language?: string;
+    autoplay?: boolean;
+    notifications?: boolean;
+  };
+  favorites?: string[];
+  watchlist?: string[];
+  watchHistory?: Array<{
+    movieId: string;
+    watchedAt: Date;
+    progress: number;
+  }>;
 }
 
 export interface LoginCredentials {
@@ -38,6 +47,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, username: string, password: string) => Promise<void>;
   logout: () => void;
+  handleGoogleCallback: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -108,12 +118,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
+  const handleGoogleCallback = async () => {
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get('token');
+      
+      if (token) {
+        localStorage.setItem("token", token);
+        await checkAuth();
+        // Clean up URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    } catch (error) {
+      console.error("Google callback failed:", error);
+    }
+  };
+
   const value = {
     user,
     isLoading,
     login,
     register,
     logout,
+    handleGoogleCallback,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

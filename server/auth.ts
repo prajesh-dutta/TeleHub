@@ -6,12 +6,18 @@ import { MongoStorage } from './mongodb';
 
 const mongoStorage = new MongoStorage();
 
+// Debug environment variables
+console.log('Environment variables check:');
+console.log('GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID ? 'SET' : 'NOT SET');
+console.log('GOOGLE_CLIENT_SECRET:', process.env.GOOGLE_CLIENT_SECRET ? 'SET' : 'NOT SET');
+
 // Google OAuth Strategy
-passport.use(new GoogleStrategy({
-  clientID: process.env.GOOGLE_CLIENT_ID!,
-  clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-  callbackURL: "/api/auth/google/callback"
-}, async (accessToken, refreshToken, profile, done) => {
+if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+  passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "/api/auth/google/callback"
+  }, async (accessToken, refreshToken, profile, done) => {
   try {
     // Check if user already exists with this Google ID
     let user = await mongoStorage.getUserByGoogleId(profile.id);
@@ -54,6 +60,9 @@ passport.use(new GoogleStrategy({
     return done(error, null);
   }
 }));
+} else {
+  console.log('⚠️  Google OAuth not configured - missing CLIENT_ID or CLIENT_SECRET');
+}
 
 // Local Strategy for email/password
 passport.use(new LocalStrategy({

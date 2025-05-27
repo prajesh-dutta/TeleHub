@@ -1,66 +1,55 @@
 import { Button } from "@/components/ui/button";
-import { Play, Search } from "lucide-react";
+import { Play, Search, Film, Heart } from "lucide-react";
 import { Link } from "wouter";
 
 export default function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Cinematic background with multiple layers */}
-      <div className="absolute inset-0">
-        {/* Base gradient */}
-        <div className="w-full h-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900"></div>
-        
-        {/* Film grain overlay */}
-        <div className="absolute inset-0 film-grain"></div>
-        
-        {/* Additional depth with subtle patterns */}
-        <div className="absolute inset-0 opacity-20">
-          <div className="w-full h-full" style={{
-            backgroundImage: `
-              radial-gradient(circle at 25% 25%, rgba(124, 58, 237, 0.3) 0%, transparent 50%),
-              radial-gradient(circle at 75% 75%, rgba(245, 158, 11, 0.2) 0%, transparent 50%),
-              radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.1) 0%, transparent 70%)
-            `
-          }}></div>
-        </div>
-      </div>
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-gray-900 to-gray-800">
       
-      <div className="relative z-10 text-center max-w-6xl mx-auto px-4 animate-fade-in">
-        <h1 className="text-6xl md:text-8xl font-bold mb-6 text-gradient-gold text-shadow-lg">
-          Discover Cinema
-        </h1>
-        <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed text-shadow">
-          Explore thousands of free movies, connect with fellow film lovers, and discover hidden gems in our curated collection of legal streaming content.
+      <div className="relative z-10 text-center max-w-6xl mx-auto px-4">
+        {/* Clean title */}
+        <div className="mb-8">
+          <div className="flex items-center justify-center mb-4">
+            <div className="h-px bg-gradient-to-r from-transparent via-gray-400 to-transparent flex-1 max-w-32"></div>
+            <Film className="mx-4 w-8 h-8 text-gray-400" />
+            <div className="h-px bg-gradient-to-r from-transparent via-gray-400 to-transparent flex-1 max-w-32"></div>
+          </div>
+          
+          <h1 className="text-6xl md:text-8xl font-bold mb-4 text-white">
+            TeleHub
+          </h1>
+          
+          <div className="flex items-center justify-center">
+            <div className="h-px bg-gradient-to-r from-transparent via-gray-400 to-transparent flex-1 max-w-48"></div>
+            <Heart className="mx-4 w-6 h-6 text-gray-400" />
+            <div className="h-px bg-gradient-to-r from-transparent via-gray-400 to-transparent flex-1 max-w-48"></div>
+          </div>
+        </div>
+        
+        <h2 className="text-3xl md:text-5xl font-light mb-6 text-gray-200">
+          Premium Movie Collection
+        </h2>
+        
+        <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-4xl mx-auto leading-relaxed font-light">
+          Discover timeless cinema masterpieces from around the world. Experience classic films from legendary 
+          directors and explore curated collections of high-quality movies available for streaming.
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-slide-up">
+        
+        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
           <Link href="/discover?publicDomain=true">
-            <Button className="btn-cinematic px-8 py-4 text-lg font-semibold transform hover:scale-105 transition-all shadow-lg hover:glow-purple">
-              <Play className="w-5 h-5 mr-2" />
-              Start Watching Free
+            <Button className="bg-gray-900 text-white px-10 py-4 text-lg hover:bg-gray-800 transition-all shadow-lg">
+              <Play className="w-5 h-5 mr-3" />
+              Begin Journey
             </Button>
           </Link>
           <Link href="/discover">
-            <Button className="btn-gold px-8 py-4 text-lg font-semibold transition-all">
-              <Search className="w-5 h-5 mr-2" />
-              Explore Collection
+            <Button variant="outline" className="border-gray-300 text-gray-800 px-10 py-4 text-lg hover:bg-gray-100 transition-all">
+              <Search className="w-5 h-5 mr-3" />
+              Explore Classics
             </Button>
           </Link>
         </div>
-        
-        {/* Floating movie elements for visual interest */}
-        <div className="absolute top-20 left-10 opacity-20 animate-pulse">
-          <div className="w-16 h-20 bg-gradient-to-br from-purple-600 to-purple-800 rounded transform rotate-12"></div>
-        </div>
-        <div className="absolute top-32 right-16 opacity-15 animate-pulse delay-1000">
-          <div className="w-12 h-16 bg-gradient-to-br from-yellow-600 to-yellow-800 rounded transform -rotate-6"></div>
-        </div>
-        <div className="absolute bottom-20 left-1/4 opacity-10 animate-pulse delay-2000">
-          <div className="w-20 h-24 bg-gradient-to-br from-purple-700 to-purple-900 rounded transform rotate-6"></div>
-        </div>
       </div>
-      
-      {/* Bottom fade for seamless transition */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-slate-900 to-transparent"></div>
     </section>
   );
 }

@@ -39,11 +39,10 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// Movies table with Bengali cinema focus
+// Movies table for classic cinema
 export const movies = pgTable("movies", {
   id: varchar("id").primaryKey().notNull(),
   title: varchar("title").notNull(),
-  bengaliTitle: varchar("bengali_title"),
   overview: text("overview"),
   director: varchar("director"),
   year: integer("year"),
@@ -53,8 +52,8 @@ export const movies = pgTable("movies", {
   videoUrl: varchar("video_url"), // Direct streaming URL
   trailerUrl: varchar("trailer_url"),
   genres: jsonb("genres").$type<string[]>().default([]),
-  language: varchar("language").default('bengali'),
-  country: varchar("country").default('india'),
+  language: varchar("language").default('english'),
+  country: varchar("country").default('usa'),
   rating: real("rating").default(0),
   isPublicDomain: boolean("is_public_domain").default(true),
   streamingPlatform: varchar("streaming_platform").default('archive'),
