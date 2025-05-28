@@ -5,6 +5,8 @@ import { createServer as createViteServer, createLogger } from "vite";
 import { type Server } from "http";
 import viteConfig from "../vite.config";
 import { nanoid } from "nanoid";
+import tailwindcss from "tailwindcss";
+import autoprefixer from "autoprefixer";
 
 const viteLogger = createLogger();
 
@@ -29,6 +31,14 @@ export async function setupVite(app: Express, server: Server) {
   const vite = await createViteServer({
     ...viteConfig,
     configFile: false,
+    css: {
+      postcss: {
+        plugins: [
+          tailwindcss,
+          autoprefixer,
+        ],
+      },
+    },
     customLogger: {
       ...viteLogger,
       error: (msg, options) => {
@@ -51,14 +61,24 @@ export async function setupVite(app: Express, server: Server) {
       return next();
     }
 
-    // Skip Vite assets - let Vite middleware handle them
-    if (url.startsWith('/@') || url.includes('.') && !url.endsWith('/')) {
+    // Skip Vite development assets and static files
+    if (url.startsWith('/@') || 
+        url.startsWith('/node_modules/') ||
+        url.startsWith('/src/') ||
+        url.match(/\.(js|jsx|ts|tsx|css|scss|sass|less|styl|stylus|pcss|postcss|vue|svelte|marko|astro|png|jpe?g|gif|svg|ico|webp|avif)(\?.*)?$/)) {
       return next();
     }
 
     try {
+      // Fix path resolution for Windows
+      const serverDir = path.dirname(new URL(import.meta.url).pathname);
+      // Remove extra drive letter on Windows
+      const normalizedServerDir = process.platform === 'win32' && serverDir.startsWith('/') 
+        ? serverDir.slice(1) 
+        : serverDir;
+      
       const clientTemplate = path.resolve(
-        import.meta.dirname,
+        normalizedServerDir,
         "..",
         "client",
         "index.html",
@@ -80,7 +100,13 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 export function serveStatic(app: Express) {
-  const distPath = path.resolve(import.meta.dirname, "public");
+  // Fix path resolution for Windows
+  const serverDir = path.dirname(new URL(import.meta.url).pathname);
+  const normalizedServerDir = process.platform === 'win32' && serverDir.startsWith('/') 
+    ? serverDir.slice(1) 
+    : serverDir;
+  
+  const distPath = path.resolve(normalizedServerDir, "public");
 
   if (!fs.existsSync(distPath)) {
     throw new Error(

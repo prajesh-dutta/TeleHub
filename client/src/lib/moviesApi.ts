@@ -20,7 +20,6 @@ export interface SearchParams {
 
 class MoviesService {
   private baseUrl = '/api';
-
   async getMovies(params: SearchParams = {}): Promise<MoviesResponse> {
     const searchParams = new URLSearchParams();
     
@@ -41,7 +40,15 @@ class MoviesService {
       throw new Error('Failed to fetch movies');
     }
 
-    return response.json();
+    const movies = await response.json();
+    
+    // Wrap the movies array in the expected response format
+    return {
+      movies: movies,
+      total: movies.length,
+      page: 1,
+      totalPages: 1
+    };
   }
 
   async getMovie(id: string): Promise<Movie> {
@@ -206,24 +213,50 @@ class MoviesService {
     }
 
     return response.json();
-  }
-  async getClassicsMovies(): Promise<Movie[]> {
-    return this.getMovies({ 
-      genre: 'Classic', 
+  }  async getClassicsMovies(): Promise<Movie[]> {
+    // Get all movies and filter for classics (high ratings, older films, or tagged as classics)
+    const response = await this.getMovies({ 
       sortBy: 'releaseDate', 
       sortOrder: 'asc',
-      limit: 20
-    }).then(response => response.movies);
+      limit: 50
+    });
+    return response.movies.filter(movie => 
+      (movie.rating && movie.rating >= 8.0) || 
+      (movie.year && movie.year <= 1970) ||
+      movie.director === 'Satyajit Ray' ||
+      movie.tags?.some(tag => tag.toLowerCase().includes('classic'))
+    );
   }
 
   async getDirectorMovies(): Promise<Movie[]> {
-    return this.getMovies({ 
-      genre: 'Featured Director',
+    // Get movies from featured directors (primarily Satyajit Ray)
+    const response = await this.getMovies({ 
       sortBy: 'releaseDate', 
       sortOrder: 'asc',
-      limit: 20
-    }).then(response => response.movies);
+      limit: 50
+    });
+    return response.movies.filter(movie =>
+      movie.director === 'Satyajit Ray' ||
+      movie.tags?.includes('Satyajit Ray')
+    );
   }
 }
 
 export const moviesService = new MoviesService();
+
+// Helper functions for easy access
+export const fetchMovies = async (): Promise<Movie[]> => {
+  const response = await fetch('/api/movies');
+  if (!response.ok) {
+    throw new Error('Failed to fetch movies');
+  }
+  return response.json();
+};
+
+export const getClassicsMovies = async (): Promise<Movie[]> => {
+  return moviesService.getClassicsMovies();
+};
+
+export const getDirectorMovies = async (): Promise<Movie[]> => {
+  return moviesService.getDirectorMovies();
+};

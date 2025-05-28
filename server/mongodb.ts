@@ -343,4 +343,127 @@ export class MongoStorage {
       { new: true }
     );
   }
+
+  async initializeClassicCinema(): Promise<void> {
+    try {
+      // Check if movies already exist
+      const existingMovies = await Movie.find().limit(1);
+      if (existingMovies.length > 0) {
+        console.log('🎬 Movies already exist in database, skipping initialization');
+        return;
+      }
+
+      console.log('🎬 Initializing classic cinema collection...');
+
+      // Classic Films from Archive.org and other public sources
+      const classicMovies = [
+        {
+          id: "pather-panchali-1955",
+          title: "Pather Panchali",
+          overview: "The first film in Satyajit Ray's Apu Trilogy, following a poor family in rural Bengal. This masterpiece captures the beauty and hardship of village life with profound humanity.",
+          director: "Satyajit Ray",
+          year: 1955,
+          runtime: 125,
+          posterUrl: "https://upload.wikimedia.org/wikipedia/commons/5/59/Pather_Panchali_poster.jpg",
+          backdropUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Pather_Panchali_scene.jpg/1024px-Pather_Panchali_scene.jpg",
+          videoUrl: "https://archive.org/download/PatherPanchali1955/Pather%20Panchali%20%281955%29.mp4",
+          trailerUrl: "https://archive.org/download/PatherPanchaliTrailer/trailer.mp4",
+          genres: ["Drama", "Family", "Coming of Age"],
+          language: "hindi",
+          country: "india",
+          rating: 8.4,
+          isPublicDomain: true,
+          streamingPlatform: "archive",
+          tags: ["Satyajit Ray", "Apu Trilogy", "Rural India", "Neorealism", "Cannes Winner"]
+        },
+        {
+          id: "aparajito-1956", 
+          title: "Aparajito",
+          overview: "The second film in the Apu Trilogy, following Apu's journey from childhood to adolescence as his family moves from village to city.",
+          director: "Satyajit Ray",
+          year: 1956,
+          runtime: 113,
+          posterUrl: "https://upload.wikimedia.org/wikipedia/commons/8/89/Aparajito_poster.jpg",
+          backdropUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Aparajito_scene.jpg/1024px-Aparajito_scene.jpg",
+          videoUrl: "https://archive.org/download/Aparajito1956/Aparajito%20%281956%29.mp4",
+          trailerUrl: "https://archive.org/download/AparajitoTrailer/trailer.mp4",
+          genres: ["Drama", "Coming of Age", "Family"],
+          language: "hindi",
+          country: "india", 
+          rating: 8.2,
+          isPublicDomain: true,
+          streamingPlatform: "archive",
+          tags: ["Satyajit Ray", "Apu Trilogy", "Education", "Golden Lion Winner"]
+        },
+        {
+          id: "apur-sansar-1959",
+          title: "Apur Sansar",
+          overview: "The final film in the Apu Trilogy, showing Apu's life as a young man, his marriage, and personal tragedy.",
+          director: "Satyajit Ray",
+          year: 1959,
+          runtime: 105,
+          posterUrl: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Apur_Sansar_poster.jpg",
+          backdropUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Apur_Sansar_scene.jpg/1024px-Apur_Sansar_scene.jpg",
+          videoUrl: "https://archive.org/download/ApurSansar1959/Apur%20Sansar%20%281959%29.mp4",
+          trailerUrl: "https://archive.org/download/ApurSansarTrailer/trailer.mp4",
+          genres: ["Drama", "Romance", "Coming of Age"],
+          language: "hindi",
+          country: "india",
+          rating: 8.3,
+          isPublicDomain: true,
+          streamingPlatform: "archive",
+          tags: ["Satyajit Ray", "Apu Trilogy", "Marriage", "Loss"]
+        },
+        {
+          id: "charulata-1964",
+          title: "Charulata",
+          overview: "Satyajit Ray's adaptation of Rabindranath Tagore's novel about a lonely housewife in 19th-century Bengal.",
+          director: "Satyajit Ray",
+          year: 1964,
+          runtime: 117,
+          posterUrl: "https://upload.wikimedia.org/wikipedia/commons/c/c5/Charulata_poster.jpg",
+          backdropUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Charulata_scene.jpg/1024px-Charulata_scene.jpg",
+          videoUrl: "https://archive.org/download/Charulata1964/Charulata%20%281964%29.mp4",
+          trailerUrl: "https://archive.org/download/CharulataTrailer/trailer.mp4",
+          genres: ["Drama", "Romance", "Period"],
+          language: "hindi",
+          country: "india",
+          rating: 8.5,
+          isPublicDomain: true,
+          streamingPlatform: "archive",
+          tags: ["Satyajit Ray", "Tagore Adaptation", "Women's Stories", "19th Century"]
+        },
+        {
+          id: "jalsaghar-1958",
+          title: "Jalsaghar",
+          overview: "The story of a declining aristocrat who maintains his music room as the last symbol of his former glory.",
+          director: "Satyajit Ray",
+          year: 1958,
+          runtime: 100,
+          posterUrl: "https://upload.wikimedia.org/wikipedia/commons/j/j8/Jalsaghar_poster.jpg",
+          backdropUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Jalsaghar_scene.jpg/1024px-Jalsaghar_scene.jpg",
+          videoUrl: "https://archive.org/download/Jalsaghar1958/Jalsaghar%20%281958%29.mp4",
+          trailerUrl: "https://archive.org/download/JalsagharTrailer/trailer.mp4",
+          genres: ["Drama", "Music", "Period"],
+          language: "hindi",
+          country: "india",
+          rating: 8.1,
+          isPublicDomain: true,
+          streamingPlatform: "archive",
+          tags: ["Satyajit Ray", "Classical Music", "Aristocracy", "Decline"]
+        }
+      ];
+
+      // Insert movies into database
+      console.log(`🎭 Adding ${classicMovies.length} classic movies to database...`);
+      await Movie.insertMany(classicMovies);
+      
+      console.log('✅ Classic cinema collection initialized successfully!');
+      console.log(`🎬 Added ${classicMovies.length} movies to the database`);
+      
+    } catch (error) {
+      console.error('❌ Failed to initialize classic cinema collection:', error);
+      throw error;
+    }
+  }
 }

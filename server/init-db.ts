@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { MongoStorage } from './mongodb';
+import { MongoStorage, connectToMongoDB } from './mongodb';
 
 // Load environment variables
 dotenv.config();
@@ -29,15 +29,17 @@ async function initializeDatabase() {
       console.log('\n✅ Database initialization simulated successfully!');
       console.log('🚀 Start the server to test with sample data');
       return;
-    }
+    }    console.log('🔗 Connecting to MongoDB...');
     
-    console.log('🔗 Connecting to MongoDB...');
+    // Connect to MongoDB first
+    await connectToMongoDB();
     
-    // Initialize MongoDB connection
+    // Initialize MongoDB storage
     const mongoStorage = new MongoStorage();
     
-    // The movie collection will be initialized automatically by the storage service
-    console.log('🎥 Classic movie collection ready...');
+    // Initialize the classic movie collection
+    console.log('🎥 Initializing classic movie collection...');
+    await mongoStorage.initializeClassicCinema();
     
     console.log('✅ Database initialization completed successfully!');
     console.log('🎬 TeleHub is ready with classic movie collection!');
