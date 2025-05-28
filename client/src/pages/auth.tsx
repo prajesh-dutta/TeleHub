@@ -13,9 +13,8 @@ export default function Auth() {
     }
   }, [user, setLocation]);
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-black relative overflow-hidden px-4">
-      {/* Premium background effects */}
+  return (    <div className="min-h-screen flex items-center justify-center bg-black relative overflow-hidden px-4">
+      {/* Background effects */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black to-blue-900/20"></div>
       <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-black via-transparent to-black"></div>
       
@@ -23,9 +22,8 @@ export default function Auth() {
       <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl animate-float"></div>
       <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-pink-500/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }}></div>
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '4s' }}></div>
-      
-      <div className="w-full max-w-lg mx-4 relative z-10">
-        {/* Premium logo section */}
+        <div className="w-full max-w-lg mx-4 relative z-10">
+        {/* Logo section */}
         <div className="text-center mb-12">
           <div className="flex items-center justify-center space-x-4 mb-8">
             <div className="relative group">
@@ -42,7 +40,7 @@ export default function Auth() {
           </div>
           
           <p className="text-gray-400 text-lg">
-            Where premium cinema meets innovation
+            Where cinema meets innovation
           </p>
         </div>
         

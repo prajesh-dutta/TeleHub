@@ -2,8 +2,7 @@ import { Link } from "wouter";
 
 export default function Footer() {
   return (
-    <footer className="relative overflow-hidden">
-      {/* Premium Background with Gradient and Animated Orbs */}
+    <footer className="relative overflow-hidden">      {/* Background with Gradient and Animated Orbs */}
       <div className="absolute inset-0 bg-gradient-to-br from-black via-purple-950/20 to-black">
         <div className="absolute top-10 left-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-float"></div>
         <div className="absolute bottom-20 right-20 w-80 h-80 bg-pink-500/10 rounded-full blur-3xl animate-float" style={{animationDelay: '2s'}}></div>
@@ -14,8 +13,7 @@ export default function Footer() {
       <div className="relative backdrop-blur-xl bg-black/40 border-t border-white/10 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="col-span-1 md:col-span-2">
-              {/* Premium Logo Section */}
+            <div className="col-span-1 md:col-span-2">              {/* Logo Section */}
               <div className="flex items-center space-x-3 mb-6 group">
                 <div className="relative p-3 rounded-2xl bg-gradient-to-br from-purple-600/20 to-pink-600/20 border border-white/10 backdrop-blur-sm group-hover:from-purple-500/30 group-hover:to-pink-500/30 transition-all duration-500">
                   <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -27,17 +25,16 @@ export default function Footer() {
                   <span className="text-4xl font-bold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
                     TeleHub
                   </span>
-                  <div className="text-sm text-gray-300/80 font-medium">Premium Movie Streaming Platform</div>
+                  <div className="text-sm text-gray-300/80 font-medium">Free Movie Streaming Platform</div>
                 </div>
               </div>
-              
-              {/* Premium Description */}
+                {/* Description */}
               <p className="text-gray-300/90 mb-8 max-w-md leading-relaxed text-lg">
                 Discover, watch and share the precious collection of Bengali cinema. 
-                Join our premium community of film lovers and explore the cinematic universe.
+                Join our community of film lovers and explore the cinematic universe.
               </p>
               
-              {/* Premium Social Links */}
+              {/* Social Links */}
               <div className="flex space-x-4">
                 {[
                   { icon: "M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" },
@@ -55,7 +52,7 @@ export default function Footer() {
               </div>
             </div>
             
-            {/* Premium Platform Links */}
+            {/* Platform Links */}
             <div className="space-y-6">
               <h4 className="text-xl font-semibold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent mb-6">
                 Platform
@@ -80,7 +77,7 @@ export default function Footer() {
               </ul>
             </div>
             
-            {/* Premium Support Links */}
+            {/* Support Links */}
             <div className="space-y-6">
               <h4 className="text-xl font-semibold bg-gradient-to-r from-white to-pink-200 bg-clip-text text-transparent mb-6">
                 Support
@@ -106,20 +103,17 @@ export default function Footer() {
             </div>
           </div>
           
-          {/* Premium Bottom Section */}
+          {/* Bottom Section */}
           <div className="relative mt-16 pt-8">
             {/* Gradient Divider */}
             <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-            
-            <div className="text-center">
-              <p className="text-gray-300/70 text-lg">
-                © 2024 <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent font-semibold">TeleHub</span>. 
+              <div className="text-center">              <p className="text-gray-300/70 text-lg">
+                © 2025 <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent font-semibold">TeleHub</span>. 
                 All rights reserved. Made with ❤️ for cinema.
               </p>
-              
-              {/* Premium Badge */}              <div className="mt-4 inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-white/10 backdrop-blur-sm">
+                {/* Free Streaming Badge */}              <div className="mt-4 inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-white/10 backdrop-blur-sm">
                 <div className="w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-pulse mr-2"></div>
-                <span className="text-sm text-gray-300/80 font-medium">Premium Streaming Experience</span>
+                <span className="text-sm text-gray-300/80 font-medium">Free Streaming Experience</span>
               </div>
             </div>
           </div>

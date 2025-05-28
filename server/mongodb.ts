@@ -87,8 +87,55 @@ const watchPartySchema = new mongoose.Schema({
   movieId: { type: String, required: true },
   scheduledTime: { type: Date, required: true },
   participants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-  maxParticipants: { type: Number, default: 50 },
-  isActive: { type: Boolean, default: true },
+  maxParticipants: { type: Number, default: 50 },  isActive: { type: Boolean, default: true },
+  createdAt: { type: Date, default: Date.now }
+});
+
+// Comment Schema for movie discussions
+const commentSchema = new mongoose.Schema({
+  movieId: { type: String, required: true },
+  userId: { type: String, required: true },
+  username: { type: String, required: true },
+  content: { type: String, required: true, maxlength: 1000 },
+  parentCommentId: { type: String }, // For reply functionality
+  likes: [{ type: String }], // Array of user IDs who liked
+  replies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
+  isEdited: { type: Boolean, default: false },
+  editedAt: Date,
+  createdAt: { type: Date, default: Date.now }
+});
+
+// Rating Schema for movie ratings
+const ratingSchema = new mongoose.Schema({
+  movieId: { type: String, required: true },
+  userId: { type: String, required: true },
+  rating: { type: Number, required: true, min: 1, max: 10 },
+  review: { type: String, maxlength: 500 }, // Optional short review
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+// Movie Discussion Schema for organized discussions
+const discussionSchema = new mongoose.Schema({
+  movieId: { type: String, required: true },
+  title: { type: String, required: true },
+  content: { type: String, required: true },
+  createdBy: { type: String, required: true },
+  username: { type: String, required: true },
+  tags: [String],
+  upvotes: [{ type: String }], // Array of user IDs
+  downvotes: [{ type: String }], // Array of user IDs
+  commentCount: { type: Number, default: 0 },
+  isSticky: { type: Boolean, default: false },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+// Like Schema for tracking likes on various content
+const likeSchema = new mongoose.Schema({
+  userId: { type: String, required: true },
+  targetId: { type: String, required: true }, // ID of liked content (comment, review, etc.)
+  targetType: { type: String, required: true, enum: ['comment', 'review', 'discussion'] },
   createdAt: { type: Date, default: Date.now }
 });
 
@@ -98,6 +145,10 @@ export const Movie = mongoose.model('Movie', movieSchema);
 export const Review = mongoose.model('Review', reviewSchema);
 export const Collection = mongoose.model('Collection', collectionSchema);
 export const WatchParty = mongoose.model('WatchParty', watchPartySchema);
+export const Comment = mongoose.model('Comment', commentSchema);
+export const Rating = mongoose.model('Rating', ratingSchema);
+export const Discussion = mongoose.model('Discussion', discussionSchema);
+export const Like = mongoose.model('Like', likeSchema);
 
 // Connect to MongoDB
 export async function connectToMongoDB() {

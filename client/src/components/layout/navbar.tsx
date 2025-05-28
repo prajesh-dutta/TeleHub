@@ -10,26 +10,22 @@ export default function Navbar() {
   const { user } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-
   const navigation = [
     { name: "Home", href: "/", icon: Film },
     { name: "Movies", href: "/discover", icon: Play },
-    { name: "Premium", href: "/discover?premium=true", icon: Crown },
     { name: "Trending", href: "/discover?trending=true", icon: Zap },
     { name: "Profile", href: "/profile", icon: User },
   ];
 
-  return (
-    <nav className="fixed top-0 w-full z-50 bg-black/20 backdrop-blur-xl border-b border-white/10">
-      {/* Premium gradient overlay */}
+  return (    <nav className="fixed top-0 w-full z-50 bg-black/20 backdrop-blur-xl border-b border-white/10">
+      {/* Background gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-purple-900/30 via-blue-900/20 to-pink-900/30"></div>
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          <div className="flex items-center space-x-12">
-            <Link href="/" className="flex items-center space-x-4 group">
+          <div className="flex items-center space-x-12">            <Link href="/" className="flex items-center space-x-4 group">
               <div className="relative">
-                {/* Premium glow effect for logo */}
+                {/* Glow effect for logo */}
                 <div className="absolute -inset-2 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full opacity-0 group-hover:opacity-75 blur-lg transition-all duration-500"></div>
                 <div className="relative bg-gradient-to-r from-purple-500 to-pink-500 p-3 rounded-full">
                   <Film className="w-8 h-8 text-white" />
@@ -39,7 +35,7 @@ export default function Navbar() {
                 <span className="text-3xl font-bold text-transparent bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text font-['Playfair_Display']">
                   TeleHub
                 </span>
-                <span className="text-sm text-purple-200 tracking-wider font-medium">Premium Cinema</span>
+                <span className="text-sm text-purple-200 tracking-wider font-medium">Free Cinema</span>
               </div>
             </Link>
             
@@ -64,15 +60,14 @@ export default function Navbar() {
             </div>
           </div>
           
-          <div className="flex items-center space-x-6">
-            {/* Premium search bar */}
+          <div className="flex items-center space-x-6">            {/* Search bar */}
             <div className="relative hidden md:block">
               <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full opacity-30 blur-sm"></div>
               <div className="relative bg-black/40 backdrop-blur-sm rounded-full border border-white/20 flex items-center">
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-300" />
                 <Input
                   type="text"
-                  placeholder="Search premium content..."
+                  placeholder="Search movies..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-12 pr-6 py-3 w-80 bg-transparent border-0 text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500/50 rounded-full"
@@ -121,8 +116,7 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-      
-      {/* Premium mobile menu */}
+        {/* Mobile menu */}
       {isMobileMenuOpen && (
         <div className="lg:hidden bg-black/40 backdrop-blur-xl border-t border-white/10">
           <div className="px-6 py-6 space-y-6">

@@ -64,13 +64,12 @@ export default function AuthForm() {
 
   return (
     <div className="space-y-8 relative">
-      {/* Premium background effects */}
+      {/* Background effects */}
       <div className="absolute -inset-4 bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-blue-600/20 rounded-3xl blur-xl opacity-30"></div>
       
       <div className="relative bg-gradient-to-br from-gray-900/95 to-black/95 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
-        {isLogin ? (
-          <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-6">
-            {/* Premium form header */}
+        {isLogin ? (          <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-6">
+            {/* Form header */}
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold text-transparent bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text mb-2">
                 Welcome Back
@@ -133,14 +132,13 @@ export default function AuthForm() {
               )}
             </Button>
           </form>
-        ) : (
-          <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-6">
-            {/* Premium form header */}
+        ) : (          <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-6">
+            {/* Form header */}
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold text-transparent bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text mb-2">
                 Join TeleHub
               </h2>
-              <p className="text-gray-400">Create your account and discover premium cinema</p>
+              <p className="text-gray-400">Create your account and discover cinema</p>
             </div>
 
             <div className="group">
@@ -240,7 +238,7 @@ export default function AuthForm() {
           </form>
         )}
         
-        {/* Premium Divider */}
+        {/* Divider */}
         <div className="relative my-8">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
@@ -250,7 +248,7 @@ export default function AuthForm() {
           </div>
         </div>
         
-        {/* Premium Google Button */}
+        {/* Google Button */}
         <Button 
           type="button" 
           variant="outline"
@@ -266,7 +264,7 @@ export default function AuthForm() {
           Continue with Google
         </Button>
         
-        {/* Premium Toggle */}
+        {/* Toggle */}
         <div className="text-center mt-8">
           <p className="text-gray-400 text-sm">
             {isLogin ? "Need an account?" : "Already have an account?"}{" "}

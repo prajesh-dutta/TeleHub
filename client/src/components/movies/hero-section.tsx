@@ -25,12 +25,11 @@ export default function HeroSection() {
       <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-gradient-to-r from-purple-500/30 to-blue-500/30 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-to-r from-pink-500/20 to-orange-500/20 rounded-full blur-3xl animate-pulse" style={{animationDelay: "2s"}}></div>
       
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="max-w-6xl mx-auto text-center">
-          {/* Premium Badge */}
+      <div className="container mx-auto px-6 relative z-10">        <div className="max-w-6xl mx-auto text-center">
+          {/* Cinema Badge */}
           <div className="inline-flex items-center gap-2 mb-8 px-6 py-3 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 backdrop-blur-md border border-yellow-500/30 rounded-full">
             <Crown className="h-5 w-5 text-yellow-400" />
-            <span className="text-yellow-300 font-semibold">Premium Cinema Collection</span>
+            <span className="text-yellow-300 font-semibold">Free Cinema Collection</span>
             <Award className="h-5 w-5 text-yellow-400" />
           </div>
           

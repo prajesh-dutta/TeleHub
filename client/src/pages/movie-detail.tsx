@@ -1,10 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
-import { useLocation } from "wouter";
-import { useSearchParams } from "@/hooks/useSearchParams";
+import { useLocation, useRoute } from "wouter";
 import VideoPlayer from "@/components/movies/video-player";
+import MovieComments from "@/components/movies/movie-comments";
+import MovieRatings from "@/components/movies/movie-ratings";
+import MovieDiscussions from "@/components/movies/movie-discussions";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Star, Clock, Calendar, Globe, ArrowLeft, Heart, Plus, Share, Users } from "lucide-react";
 import { moviesService } from "@/lib/moviesApi";
 import { useAuth } from "@/lib/auth";
@@ -14,7 +17,8 @@ import type { Movie } from "@shared/schema";
 
 export default function MovieDetail() {
   const [, setLocation] = useLocation();
-  const { movieId } = useSearchParams();
+  const [match, params] = useRoute("/movie/:id");
+  const movieId = params?.id;
   const { user } = useAuth();
   const { toast } = useToast();
   
@@ -313,10 +317,32 @@ export default function MovieDetail() {
                     {tag}
                   </Badge>
                 ))}
-              </div>
-            </CardContent>
+              </div>            </CardContent>
           </Card>
         </div>
+      </div>
+
+      {/* Interactive Features Section */}
+      <div className="container mx-auto px-4 py-12">
+        <Tabs defaultValue="comments" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="comments">Comments</TabsTrigger>
+            <TabsTrigger value="ratings">Ratings</TabsTrigger>
+            <TabsTrigger value="discussions">Discussions</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="comments" className="mt-6">
+            <MovieComments movieId={movie.id} />
+          </TabsContent>
+          
+          <TabsContent value="ratings" className="mt-6">
+            <MovieRatings movieId={movie.id} />
+          </TabsContent>
+          
+          <TabsContent value="discussions" className="mt-6">
+            <MovieDiscussions movieId={movie.id} />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

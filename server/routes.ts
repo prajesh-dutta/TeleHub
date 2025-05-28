@@ -370,7 +370,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Google Cloud Streaming Routes
   app.use('/api/streaming', streamingRoutes);
-
   // Admin: Upload movie
   app.post("/api/admin/movies/upload", authenticateToken, upload.single('video'), async (req: any, res) => {
     try {
@@ -394,6 +393,245 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error uploading movie:", error);
       res.status(500).json({ message: "Failed to upload movie" });
+    }
+  });
+
+  // ===================== COMMENTS API =====================
+  
+  // Get comments for a movie
+  app.get("/api/movies/:id/comments", async (req, res) => {
+    try {
+      const { id: movieId } = req.params;
+      const { Comment } = await import('./mongodb');
+      
+      const comments = await Comment.find({ movieId, parentCommentId: { $exists: false } })
+        .sort({ createdAt: -1 })
+        .populate('replies')
+        .lean();
+        
+      res.json(comments);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+      res.status(500).json({ message: "Failed to fetch comments" });
+    }
+  });
+
+  // Add a comment to a movie
+  app.post("/api/movies/:id/comments", authenticateToken, async (req: any, res) => {
+    try {
+      const { id: movieId } = req.params;
+      const { content, parentCommentId } = req.body;
+      const { Comment } = await import('./mongodb');
+      
+      if (!content || content.trim().length === 0) {
+        return res.status(400).json({ message: "Comment content is required" });
+      }
+      
+      const comment = new Comment({
+        movieId,
+        userId: req.user.id,
+        username: req.user.username,
+        content: content.trim(),
+        parentCommentId
+      });
+      
+      await comment.save();
+      
+      // If it's a reply, add to parent's replies array
+      if (parentCommentId) {
+        await Comment.findByIdAndUpdate(parentCommentId, {
+          $push: { replies: comment._id }
+        });
+      }
+      
+      res.json(comment);
+    } catch (error) {
+      console.error("Error adding comment:", error);
+      res.status(500).json({ message: "Failed to add comment" });
+    }
+  });
+
+  // Like/unlike a comment
+  app.post("/api/comments/:id/like", authenticateToken, async (req: any, res) => {
+    try {
+      const { id: commentId } = req.params;
+      const userId = req.user.id;
+      const { Comment } = await import('./mongodb');
+      
+      const comment = await Comment.findById(commentId);
+      if (!comment) {
+        return res.status(404).json({ message: "Comment not found" });
+      }
+      
+      const likeIndex = comment.likes.indexOf(userId);
+      if (likeIndex > -1) {
+        // Unlike
+        comment.likes.splice(likeIndex, 1);
+      } else {
+        // Like
+        comment.likes.push(userId);
+      }
+      
+      await comment.save();
+      res.json({ likes: comment.likes.length, isLiked: likeIndex === -1 });
+    } catch (error) {
+      console.error("Error toggling comment like:", error);
+      res.status(500).json({ message: "Failed to toggle like" });
+    }
+  });
+
+  // ===================== RATINGS API =====================
+  
+  // Get movie ratings and average
+  app.get("/api/movies/:id/ratings", async (req, res) => {
+    try {
+      const { id: movieId } = req.params;
+      const { Rating } = await import('./mongodb');
+      
+      const ratings = await Rating.find({ movieId }).lean();
+      const average = ratings.length > 0 
+        ? ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length 
+        : 0;
+        
+      res.json({
+        average: Math.round(average * 10) / 10,
+        count: ratings.length,
+        ratings: ratings.map(r => ({
+          id: r._id,
+          rating: r.rating,
+          review: r.review,
+          username: r.userId, // In real app, populate username
+          createdAt: r.createdAt
+        }))
+      });
+    } catch (error) {
+      console.error("Error fetching ratings:", error);
+      res.status(500).json({ message: "Failed to fetch ratings" });
+    }
+  });
+
+  // Add/update user rating for a movie
+  app.post("/api/movies/:id/rate", authenticateToken, async (req: any, res) => {
+    try {
+      const { id: movieId } = req.params;
+      const { rating, review } = req.body;
+      const userId = req.user.id;
+      const { Rating } = await import('./mongodb');
+      
+      if (!rating || rating < 1 || rating > 10) {
+        return res.status(400).json({ message: "Rating must be between 1 and 10" });
+      }
+      
+      const existingRating = await Rating.findOne({ movieId, userId });
+      
+      if (existingRating) {
+        // Update existing rating
+        existingRating.rating = rating;
+        existingRating.review = review;
+        existingRating.updatedAt = new Date();
+        await existingRating.save();
+        res.json(existingRating);
+      } else {
+        // Create new rating
+        const newRating = new Rating({
+          movieId,
+          userId,
+          rating,
+          review
+        });
+        await newRating.save();
+        res.json(newRating);
+      }
+    } catch (error) {
+      console.error("Error saving rating:", error);
+      res.status(500).json({ message: "Failed to save rating" });
+    }
+  });
+
+  // ===================== DISCUSSIONS API =====================
+  
+  // Get discussions for a movie
+  app.get("/api/movies/:id/discussions", async (req, res) => {
+    try {
+      const { id: movieId } = req.params;
+      const { Discussion } = await import('./mongodb');
+      
+      const discussions = await Discussion.find({ movieId })
+        .sort({ isSticky: -1, createdAt: -1 })
+        .lean();
+        
+      res.json(discussions.map(d => ({
+        ...d,
+        score: d.upvotes.length - d.downvotes.length
+      })));
+    } catch (error) {
+      console.error("Error fetching discussions:", error);
+      res.status(500).json({ message: "Failed to fetch discussions" });
+    }
+  });
+
+  // Create a new discussion
+  app.post("/api/movies/:id/discussions", authenticateToken, async (req: any, res) => {
+    try {
+      const { id: movieId } = req.params;
+      const { title, content, tags } = req.body;
+      const { Discussion } = await import('./mongodb');
+      
+      if (!title || !content) {
+        return res.status(400).json({ message: "Title and content are required" });
+      }
+      
+      const discussion = new Discussion({
+        movieId,
+        title: title.trim(),
+        content: content.trim(),
+        createdBy: req.user.id,
+        username: req.user.username,
+        tags: tags || []
+      });
+      
+      await discussion.save();
+      res.json(discussion);
+    } catch (error) {
+      console.error("Error creating discussion:", error);
+      res.status(500).json({ message: "Failed to create discussion" });
+    }
+  });
+
+  // Vote on a discussion
+  app.post("/api/discussions/:id/vote", authenticateToken, async (req: any, res) => {
+    try {
+      const { id: discussionId } = req.params;
+      const { type } = req.body; // 'up' or 'down'
+      const userId = req.user.id;
+      const { Discussion } = await import('./mongodb');
+      
+      const discussion = await Discussion.findById(discussionId);
+      if (!discussion) {
+        return res.status(404).json({ message: "Discussion not found" });
+      }
+      
+      // Remove existing votes
+      discussion.upvotes = discussion.upvotes.filter(id => id !== userId);
+      discussion.downvotes = discussion.downvotes.filter(id => id !== userId);
+      
+      // Add new vote
+      if (type === 'up') {
+        discussion.upvotes.push(userId);
+      } else if (type === 'down') {
+        discussion.downvotes.push(userId);
+      }
+      
+      await discussion.save();
+      
+      res.json({
+        upvotes: discussion.upvotes.length,
+        downvotes: discussion.downvotes.length,
+        score: discussion.upvotes.length - discussion.downvotes.length
+      });
+    } catch (error) {
+      console.error("Error voting on discussion:", error);
+      res.status(500).json({ message: "Failed to vote" });
     }
   });
 

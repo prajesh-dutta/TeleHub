@@ -30,10 +30,9 @@ export default function Home() {
       <div className="pt-20">
         <HeroSection />
       </div>
-      
-      {/* Movie Spotlight Section */}
+        {/* Movie Spotlight Section */}
       <section className="py-24 bg-gradient-to-b from-black via-gray-900/50 to-black relative overflow-hidden">
-        {/* Premium background effects */}
+        {/* Background effects */}
         <div className="absolute inset-0 bg-gradient-to-r from-purple-900/20 via-transparent to-blue-900/20"></div>
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-pink-500/10 rounded-full blur-3xl"></div>
@@ -69,9 +68,7 @@ export default function Home() {
             <MovieGrid movies={featuredMovies || []} />
           )}
         </div>
-      </section>
-
-      {/* Premium Cinema Classics Section */}
+      </section>      {/* Cinema Classics Section */}
       <section className="py-20 bg-gradient-to-b from-black to-gray-900 relative">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-900/20 via-transparent to-purple-900/20"></div>
         
@@ -102,9 +99,7 @@ export default function Home() {
             <MovieGrid movies={classicsMovies || []} compact />
           )}
         </div>
-      </section>
-
-      {/* Premium Director Collection Section */}
+      </section>      {/* Director Collection Section */}
       <section className="py-20 bg-gradient-to-b from-gray-900 to-black relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-pink-900/20 via-transparent to-blue-900/20"></div>
         <div className="absolute top-1/2 left-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl transform -translate-y-1/2"></div>
@@ -115,7 +110,7 @@ export default function Home() {
             <h2 className="text-5xl font-bold mb-6 text-transparent bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text">
               Featured Director Collection
             </h2>
-            <p className="text-gray-300 text-xl max-w-2xl mx-auto">Explore legendary filmmaker's masterworks in premium quality</p>
+            <p className="text-gray-300 text-xl max-w-2xl mx-auto">Explore legendary filmmaker's masterworks in high quality</p>
           </div>
           
           {directorLoading ? (

@@ -17,10 +17,9 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/auth" component={Auth} />
-      <Route path="/auth/google/callback" component={GoogleCallback} />
-      <Route path="/discover" component={Discover} />
+      <Route path="/auth/google/callback" component={GoogleCallback} />      <Route path="/discover" component={Discover} />
       <Route path="/profile" component={Profile} />
-      <Route path="/movie" component={MovieDetail} />
+      <Route path="/movie/:id" component={MovieDetail} />
       <Route path="/community" component={Home} />
       <Route path="/kids" component={Home} />
       <Route component={NotFound} />

@@ -3,16 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Users, Calendar, Star, Heart, Crown, Zap, Play } from "lucide-react";
 
-export default function CommunityFeatures() {
-  return (
+export default function CommunityFeatures() {  return (
     <section className="py-24 bg-gradient-to-b from-black via-gray-900 to-black relative overflow-hidden">
-      {/* Premium background effects */}
+      {/* Background effects */}
       <div className="absolute inset-0 bg-gradient-to-r from-purple-900/20 via-transparent to-blue-900/20"></div>
       <div className="absolute top-0 left-1/3 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-float"></div>
       <div className="absolute bottom-0 right-1/3 w-96 h-96 bg-pink-500/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }}></div>
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
-        {/* Premium Header */}
+        {/* Header */}
         <div className="text-center mb-20">
           <div className="flex items-center justify-center mb-8">
             <div className="h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent flex-1 max-w-32"></div>
@@ -26,14 +25,14 @@ export default function CommunityFeatures() {
             Join the Community
           </h2>
           <p className="text-gray-300 text-xl max-w-3xl mx-auto leading-relaxed">
-            Connect with fellow cinephiles and immerse yourself in premium movie experiences
+            Connect with fellow cinephiles and immerse yourself in free movie experiences
           </p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {/* Premium Community Picks */}
+          {/* Community Picks */}
           <div className="group relative">
-            {/* Premium glow effect */}
+            {/* Glow effect */}
             <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl opacity-0 group-hover:opacity-50 blur-lg transition-all duration-700"></div>
             
             <Card className="relative bg-gradient-to-br from-gray-900/90 to-black/90 backdrop-blur-sm border border-white/10 overflow-hidden transition-all duration-500 hover:scale-105 rounded-2xl">
@@ -45,9 +44,8 @@ export default function CommunityFeatures() {
                   Community Picks
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-gray-300 mb-8 leading-relaxed">
-                  Discover premium movies curated by our passionate community of film connoisseurs.
+              <CardContent>                <p className="text-gray-300 mb-8 leading-relaxed">
+                  Discover movies curated by our passionate community of film connoisseurs.
                 </p>
                 
                 <div className="space-y-4">
@@ -76,10 +74,9 @@ export default function CommunityFeatures() {
                     </div>
                     <div className="flex-1">
                       <p className="font-semibold text-white">FilmMaestro</p>
-                      <p className="text-sm text-gray-400">Recommended "Vertigo"</p>
-                      <div className="flex items-center mt-1">
+                      <p className="text-sm text-gray-400">Recommended "Vertigo"</p>                      <div className="flex items-center mt-1">
                         <Badge className="bg-pink-500/20 text-pink-200 border border-pink-500/30 text-xs">
-                          Premium Pick
+                          Top Pick
                         </Badge>
                       </div>
                     </div>
@@ -95,9 +92,7 @@ export default function CommunityFeatures() {
                 </Button>
               </CardContent>
             </Card>
-          </div>
-
-          {/* Premium Watch Parties */}
+          </div>          {/* Watch Parties */}
           <div className="group relative">
             <div className="absolute -inset-1 bg-gradient-to-r from-green-600 to-blue-600 rounded-2xl opacity-0 group-hover:opacity-50 blur-lg transition-all duration-700"></div>
             
@@ -112,7 +107,7 @@ export default function CommunityFeatures() {
               </CardHeader>
               <CardContent>
                 <p className="text-gray-300 mb-8 leading-relaxed">
-                  Join synchronized premium viewing sessions with friends and cinephiles worldwide.
+                  Join synchronized viewing sessions with friends and cinephiles worldwide.
                 </p>
                 
                 <div className="space-y-6">
@@ -121,16 +116,15 @@ export default function CommunityFeatures() {
                       <div className="absolute inset-0 bg-black/30"></div>
                       <div className="relative flex items-center space-x-2 text-white font-bold">
                         <Crown className="w-5 h-5" />
-                        <span>Premium Cinema Night</span>
+                        <span>Cinema Night</span>
                       </div>
-                    </div>
-                    <h4 className="font-bold mb-2 text-white">Premium Cinema Night</h4>
+                    </div>                    <h4 className="font-bold mb-2 text-white">Cinema Night</h4>
                     <p className="text-sm text-gray-300 mb-3">Tonight at 8:00 PM</p>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
                         <span className="text-xs text-gray-400">24 cinephiles</span>
                         <Badge className="bg-yellow-500/20 text-yellow-200 border border-yellow-500/30 text-xs">
-                          VIP
+                          Featured
                         </Badge>
                       </div>
                       <Button size="sm" className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-semibold px-4 py-2 rounded-lg">
@@ -166,9 +160,7 @@ export default function CommunityFeatures() {
                 </div>
               </CardContent>
             </Card>
-          </div>
-
-          {/* Premium Movie Reviews */}
+          </div>          {/* Movie Reviews */}
           <div className="group relative">
             <div className="absolute -inset-1 bg-gradient-to-r from-yellow-600 to-orange-600 rounded-2xl opacity-0 group-hover:opacity-50 blur-lg transition-all duration-700"></div>
             
@@ -178,12 +170,12 @@ export default function CommunityFeatures() {
                   <div className="w-12 h-12 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center mr-4">
                     <Star className="w-6 h-6 text-white" />
                   </div>
-                  Premium Reviews
+                  Movie Reviews
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-gray-300 mb-8 leading-relaxed">
-                  Read expert reviews from our premium community and share your cinematic insights.
+                  Read expert reviews from our community and share your cinematic insights.
                 </p>
                 
                 <div className="space-y-4">
@@ -228,15 +220,13 @@ export default function CommunityFeatures() {
               </CardContent>
             </Card>
           </div>
-        </div>
-
-        {/* Premium CTA Section */}
+        </div>        {/* Community CTA Section */}
         <div className="mt-20 text-center">
           <div className="relative max-w-4xl mx-auto">
             <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 rounded-3xl opacity-30 blur-lg"></div>
             <div className="relative bg-gradient-to-r from-gray-900/95 to-black/95 backdrop-blur-sm rounded-3xl p-12 border border-white/10">
               <h3 className="text-4xl font-bold mb-6 text-transparent bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text">
-                Ready to Join Our Premium Community?
+                Ready to Join Our Community?
               </h3>
               <p className="text-gray-300 text-lg mb-8 max-w-2xl mx-auto">
                 Connect with fellow movie lovers, discover hidden gems, and experience cinema like never before
@@ -244,10 +234,10 @@ export default function CommunityFeatures() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold px-8 py-4 rounded-xl transition-all duration-300 hover:scale-105 text-lg">
                   <Crown className="w-5 h-5 mr-2" />
-                  Join Premium
+                  Join Community
                 </Button>
                 <Button variant="outline" className="border-2 border-white/30 text-white hover:bg-white/10 backdrop-blur-sm font-semibold px-8 py-4 rounded-xl transition-all duration-300 hover:scale-105 text-lg">
-                  Explore Community
+                  Explore Movies
                 </Button>
               </div>
             </div>
