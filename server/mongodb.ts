@@ -52,9 +52,13 @@ const movieSchema = new mongoose.Schema({
     role: String
   }],
   awards: [String],
-  imdbId: String,
-  tmdbId: String,
+  imdbId: String,  tmdbId: String,
   featured: { type: Boolean, default: false },
+  qualities: {
+    type: Map,
+    of: String,
+    default: {}
+  },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });
@@ -394,9 +398,12 @@ export class MongoStorage {
       { new: true }
     );
   }
-
   async initializeClassicCinema(): Promise<void> {
     try {
+      // DISABLED: Initialization completely disabled to preserve uploaded movies
+      console.log('🎬 Classic cinema initialization is disabled - using uploaded movies only');
+      return;
+
       // Check if movies already exist
       const existingMovies = await Movie.find().limit(1);
       if (existingMovies.length > 0) {

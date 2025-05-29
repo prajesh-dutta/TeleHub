@@ -4,6 +4,7 @@ import { MongoStorage } from './mongodb.js';
 import multer from 'multer';
 
 const router = express.Router();
+const mongoStorage = new MongoStorage();
 
 // Configure multer for file uploads
 const upload = multer({
@@ -24,9 +25,8 @@ const upload = multer({
 router.get('/stream/:movieId/:quality?', async (req, res) => {
   try {
     const { movieId, quality = '720p' } = req.params;
-    
-    // Get movie from database
-    const movie = await MongoStorage.getMovie(movieId);
+      // Get movie from database
+    const movie = await mongoStorage.getMovie(movieId);
     if (!movie) {
       return res.status(404).json({ error: 'Movie not found' });
     }
@@ -45,11 +45,10 @@ router.get('/stream/:movieId/:quality?', async (req, res) => {
 
 // Get secure streaming URL
 router.get('/secure-url/:movieId/:quality?', async (req, res) => {
-  try {
-    const { movieId, quality = '720p' } = req.params;
+  try {    const { movieId, quality = '720p' } = req.params;
     const { expires = 2 } = req.query; // Hours
     
-    const movie = await MongoStorage.getMovie(movieId);
+    const movie = await mongoStorage.getMovie(movieId);
     if (!movie) {
       return res.status(404).json({ error: 'Movie not found' });
     }
@@ -101,9 +100,7 @@ router.post('/upload', upload.single('movie'), async (req, res) => {
       fileSize: req.file.size,
       uploadedAt: new Date(),
       status: 'active'
-    };
-
-    const savedMovie = await MongoStorage.addMovie(movieData);
+    };    const savedMovie = await mongoStorage.createMovie(movieData);
 
     res.json({
       success: true,
@@ -118,11 +115,10 @@ router.post('/upload', upload.single('movie'), async (req, res) => {
 });
 
 // Get movie qualities available
-router.get('/qualities/:movieId', async (req, res) => {
-  try {
+router.get('/qualities/:movieId', async (req, res) => {  try {
     const { movieId } = req.params;
     
-    const movie = await MongoStorage.getMovie(movieId);
+    const movie = await mongoStorage.getMovie(movieId);
     if (!movie) {
       return res.status(404).json({ error: 'Movie not found' });
     }
@@ -148,12 +144,11 @@ router.get('/qualities/:movieId', async (req, res) => {
 router.get('/test-gcp', async (req, res) => {
   try {
     const connectionResult = await GoogleCloudService.testConnection();
-    res.json(connectionResult);
-  } catch (error) {
+    res.json(connectionResult);  } catch (error) {
     console.error('GCP test failed:', error);
     res.status(500).json({ 
       error: 'Google Cloud connection failed',
-      details: error.message 
+      details: error instanceof Error ? error.message : 'Unknown error'
     });
   }
 });

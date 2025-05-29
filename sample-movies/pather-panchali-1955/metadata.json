@@ -1,0 +1,28 @@
+{
+  "title": "Pather Panchali",
+  "year": 1955,
+  "overview": "Impoverished priest Harihar Ray, dreaming of a better life for himself and his family, leaves his rural Bengal village in search of work. Alone, his wife Sarbojaya looks after her rebellious daughter Durga and her young son Apu, as well as Harihar's elderly cousin Indir.",
+  "director": "Satyajit Ray",
+  "runtime": 125,
+  "genres": ["Drama", "Family"],
+  "language": "bengali",
+  "country": "india",
+  "rating": 8.6,
+  "cast": [
+    {"name": "Kanu Bannerjee", "character": "Harihar Ray"},
+    {"name": "Karuna Bannerjee", "character": "Sarbojaya Ray"},
+    {"name": "Subir Banerjee", "character": "Apu"},
+    {"name": "Uma Dasgupta", "character": "Durga"}
+  ],
+  "crew": [
+    {"name": "Satyajit Ray", "job": "Director"},
+    {"name": "Satyajit Ray", "job": "Screenplay"},
+    {"name": "Subrata Mitra", "job": "Cinematography"}
+  ],
+  "tags": ["classic", "bengali cinema", "coming-of-age", "poverty", "family"],
+  "featured": true,
+  "isPublicDomain": true,
+  "imdbId": "tt0048473",
+  "tmdbId": "19725",
+  "awards": ["Cannes Film Festival - Best Human Document"]
+}

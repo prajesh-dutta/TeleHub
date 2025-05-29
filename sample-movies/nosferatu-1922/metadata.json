@@ -1,0 +1,27 @@
+{
+  "title": "Nosferatu",
+  "year": 1922,
+  "overview": "Vampire Count Orlok expresses interest in a new residence and real estate agent Hutter's wife. Silent classic adaptation of Dracula.",
+  "director": "F.W. Murnau",
+  "runtime": 94,
+  "genres": ["Horror", "Fantasy", "Silent"],
+  "language": "german",
+  "country": "germany",
+  "rating": 7.9,
+  "cast": [
+    {"name": "Max Schreck", "character": "Count Orlok/Nosferatu"},
+    {"name": "Gustav von Wangenheim", "character": "Thomas Hutter"},
+    {"name": "Greta Schröder", "character": "Ellen Hutter"},
+    {"name": "Alexander Granach", "character": "Knock"}
+  ],
+  "crew": [
+    {"name": "F.W. Murnau", "job": "Director"},
+    {"name": "Henrik Galeen", "job": "Screenplay"},
+    {"name": "Fritz Arno Wagner", "job": "Cinematography"}
+  ],
+  "tags": ["silent film", "vampire", "german expressionism", "horror classic"],
+  "featured": true,
+  "isPublicDomain": true,
+  "imdbId": "tt0013442",
+  "tmdbId": "11006"
+}
