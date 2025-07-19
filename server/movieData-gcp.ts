@@ -223,7 +223,7 @@ export async function initializeBengaliMovies() {
     console.log('🎬 Initializing Bengali movie collection with Google Cloud Storage URLs...');
 
     for (const movieData of bengaliMoviesData) {
-      await mongoStorage.addMovie(movieData);
+      await mongoStorage.createMovie(movieData);
       console.log(`✅ Added movie: ${movieData.title} (${movieData.englishTitle})`);
     }
 

@@ -66,7 +66,7 @@ export class GoogleCloudService {
 
       // Get file metadata
       const [metadata] = await file.getMetadata();
-      const fileSize = parseInt(metadata.size);
+      const fileSize = parseInt(String(metadata.size || '0'));
       
       // Handle range requests for video seeking
       const range = req.headers.range;
