@@ -262,6 +262,13 @@ const sampleMovies: Movie[] = [
     isPublicDomain: true,
     streamingLinks: [
       { platform: "Internet Archive", url: "https://archive.org/details/nosferatu-1922" }
+    ],
+    communityRating: 7.8,
+    tags: ["german expressionism", "vampire", "silent horror"]
+  },
+  {
+    id: "4",
+    title: "The Gold Rush",
     overview: "The Tramp goes to the Klondike in search of gold and finds it and more.",
     posterPath: "/gold-rush.jpg",
     releaseDate: "1925-06-26", 
