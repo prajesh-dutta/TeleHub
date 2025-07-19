@@ -15,7 +15,6 @@ build/
 .env.development.local
 .env.test.local
 .env.production.local
-.env.example
 
 # Google Cloud credentials
 config/telehub-service-account.json
