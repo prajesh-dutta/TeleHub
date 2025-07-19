@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom vintage animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(-20px) rotate(5deg);
+    opacity: 0.8;
+  }
+}
+
+/* Custom scrollbar for vintage feel */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f7f3e9;
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #d4af37, #b8860b);
+  border-radius: 0;
+  border: 2px solid #f7f3e9;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #ffd700, #daa520);
+}
+
+/* Classic cinema typography */
+.cinema-title {
+  text-shadow: 
+    2px 2px 0px rgba(212, 175, 55, 0.3),
+    4px 4px 8px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.15em;
+}
+
+/* Vintage gradient text */
+.vintage-gradient-text {
+  background: linear-gradient(135deg, #8b4513, #d2691e, #daa520, #d4af37);
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
