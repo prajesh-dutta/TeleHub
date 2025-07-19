@@ -21,7 +21,7 @@ export default function GoogleCallback() {
         }
 
         if (code) {
-          await handleGoogleCallback(code);
+          await handleGoogleCallback();
           setLocation('/'); // Redirect to home page after successful login
         } else {
           setLocation('/auth?error=missing_code');

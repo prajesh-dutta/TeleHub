@@ -55,6 +55,7 @@ export const movies = pgTable("movies", {
   language: varchar("language").default('english'),
   country: varchar("country").default('usa'),
   rating: real("rating").default(0),
+  communityRating: real("community_rating").default(0),
   isPublicDomain: boolean("is_public_domain").default(true),
   streamingPlatform: varchar("streaming_platform").default('archive'),
   tags: jsonb("tags").$type<string[]>().default([]),

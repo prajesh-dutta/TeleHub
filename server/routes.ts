@@ -9,6 +9,9 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import multer from "multer";
 import { Request, Response } from "express";
+import { CacheService } from "./redis";
+import { VideoCompressionService } from "./video-compression";
+import { ImageOptimizationService } from "./image-optimization";
 
 const JWT_SECRET = process.env.JWT_SECRET || "telehub-secret-key";
 const mongoStorage = new MongoStorage();
@@ -199,12 +202,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Movie routes
+  // Movie routes with caching
   app.get("/api/movies", async (req, res) => {
     try {
       const limit = parseInt(req.query.limit as string) || 20;
       const offset = parseInt(req.query.offset as string) || 0;
+      const page = Math.floor(offset / limit);
+      
+      // Try to get from cache first
+      const cached = await CacheService.getCachedMovieList('all', page);
+      if (cached) {
+        console.log(`⚡ Cache hit for movies page ${page}`);
+        return res.json(cached);
+      }
+      
+      // Get from database
       const movies = await mongoStorage.getMovies(limit, offset);
+      
+      // Cache the result
+      await CacheService.cacheMovieList('all', page, movies, 600); // 10 minutes
+      
       res.json(movies);
     } catch (error) {
       console.error("Error fetching movies:", error);
@@ -225,10 +242,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/movies/:id", async (req, res) => {
     try {
+      // Try cache first
+      const cached = await CacheService.getCachedMovie(req.params.id);
+      if (cached) {
+        console.log(`⚡ Cache hit for movie ${req.params.id}`);
+        return res.json(cached);
+      }
+      
       const movie = await mongoStorage.getMovie(req.params.id);
       if (!movie) {
         return res.status(404).json({ message: "Movie not found" });
       }
+      
+      // Cache the movie
+      await CacheService.cacheMovie(req.params.id, movie, 3600); // 1 hour
+      
       res.json(movie);
     } catch (error) {
       console.error("Error fetching movie:", error);
@@ -250,7 +278,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/movies/search/:query", async (req, res) => {
     try {
       const limit = parseInt(req.query.limit as string) || 20;
-      const movies = await mongoStorage.searchMovies(req.params.query, limit);
+      const query = req.params.query;
+      
+      // Try cache first
+      const cached = await CacheService.getCachedSearchResults(query);
+      if (cached) {
+        console.log(`⚡ Cache hit for search: ${query}`);
+        return res.json(cached);
+      }
+      
+      const movies = await mongoStorage.searchMovies(query, limit);
+      
+      // Cache search results
+      await CacheService.cacheSearchResults(query, movies, 900); // 15 minutes
+      
       res.json(movies);
     } catch (error) {
       console.error("Error searching movies:", error);
@@ -342,10 +383,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // S3 streaming URL
+  // S3 streaming URL with caching
   app.get("/api/movies/:id/stream", authenticateToken, async (req: any, res) => {
     try {
-      const movie = await mongoStorage.getMovie(req.params.id);
+      const movieId = req.params.id;
+      const quality = req.query.quality || '720p';
+      
+      // Try to get cached streaming URL
+      const cachedUrl = await CacheService.getCachedStreamingUrl(movieId, quality as string);
+      if (cachedUrl) {
+        console.log(`⚡ Cache hit for streaming URL: ${movieId}:${quality}`);
+        return res.json({ streamingUrl: cachedUrl });
+      }
+      
+      const movie = await mongoStorage.getMovie(movieId);
       if (!movie) {
         return res.status(404).json({ message: "Movie not found" });
       }
@@ -356,6 +407,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const urlParts = videoUrl.split('/');
         const key = urlParts.slice(-2).join('/'); // Get last two parts as key
         const streamingUrl = await s3Service.getStreamingUrl(key);
+        
+        // Cache the streaming URL for 5 minutes
+        await CacheService.cacheStreamingUrl(movieId, quality as string, streamingUrl, 300);
+        
         res.json({ streamingUrl });
       } else {
         // For public domain movies, return direct URL
@@ -369,26 +424,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Google Cloud Streaming Routes
   app.use('/api/streaming', streamingRoutes);
-  // Admin: Upload movie
+  // Admin: Upload movie with video compression
   app.post("/api/admin/movies/upload", authenticateToken, upload.single('video'), async (req: any, res) => {
     try {
       // Check if user is admin (you can implement role-based access)
-      const { movieId } = req.body;
+      const { movieId, title, description } = req.body;
       const file = req.file;
 
       if (!file) {
         return res.status(400).json({ message: "No file uploaded" });
       }
 
-      const key = s3Service.generateMovieKey(movieId, 'video', 'mp4');
-      await s3Service.uploadFile(key, file.buffer, file.mimetype);
-      
-      const videoUrl = s3Service.getPublicUrl(key);
-      
-      // Update movie with new video URL
-      await mongoStorage.updateMovie(movieId, { videoUrl });
+      // Validate video file
+      const validation = await VideoCompressionService.validateVideo(file.path || '');
+      if (!validation.valid) {
+        return res.status(400).json({ message: validation.error });
+      }
 
-      res.json({ success: true, message: 'Movie uploaded successfully', videoUrl });
+      // Get optimal compression settings
+      const qualities = await VideoCompressionService.getOptimalSettings(file.path || '');
+      
+      // Compress video to multiple qualities
+      const compressionResult = await VideoCompressionService.compressVideoToQualities({
+        inputBuffer: file.buffer,
+        outputDir: '/tmp/video-processing',
+        movieId,
+        qualities,
+        deleteOriginal: true
+      });
+
+      if (!compressionResult.success) {
+        return res.status(500).json({ 
+          message: "Video compression failed", 
+          error: compressionResult.error 
+        });
+      }
+
+      // Update movie with compressed video URLs
+      const videoUrls: Record<string, string> = {};
+      for (const output of compressionResult.outputs) {
+        if (output.url) {
+          videoUrls[output.quality] = output.url;
+        }
+      }
+
+      await mongoStorage.updateMovie(movieId, { 
+        videoUrl: videoUrls['720p'] || videoUrls[Object.keys(videoUrls)[0]], // Default quality
+        qualities: videoUrls,
+        title,
+        description,
+        processingStatus: 'completed'
+      });
+
+      // Invalidate cache for this movie
+      await CacheService.clearCache(`movie:${movieId}`);
+      await CacheService.invalidatePattern('movies:*');
+
+      res.json({ 
+        success: true, 
+        message: 'Movie uploaded and processed successfully',
+        qualities: Object.keys(videoUrls),
+        compressionResults: compressionResult.outputs
+      });
     } catch (error) {
       console.error("Error uploading movie:", error);
       res.status(500).json({ message: "Failed to upload movie" });
@@ -631,6 +728,117 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error voting on discussion:", error);
       res.status(500).json({ message: "Failed to vote" });
+    }
+  });
+
+  // ===================== MEDIA PROCESSING API =====================
+
+  // Upload and optimize movie poster
+  app.post("/api/admin/movies/:id/poster", authenticateToken, upload.single('poster'), async (req: any, res) => {
+    try {
+      const movieId = req.params.id;
+      const file = req.file;
+
+      if (!file) {
+        return res.status(400).json({ message: "No poster image uploaded" });
+      }
+
+      // Validate image
+      const validation = await ImageOptimizationService.validateImage(file.buffer);
+      if (!validation.valid) {
+        return res.status(400).json({ message: validation.error });
+      }
+
+      // Optimize poster
+      const optimizationResult = await ImageOptimizationService.optimizeMoviePoster(
+        file.buffer,
+        movieId,
+        '/tmp/image-processing'
+      );
+
+      if (!optimizationResult.success) {
+        return res.status(500).json({ 
+          message: "Image optimization failed", 
+          error: optimizationResult.error 
+        });
+      }
+
+      // Update movie with poster URLs
+      const posterUrls: Record<string, string> = {};
+      for (const output of optimizationResult.outputs) {
+        if (output.url) {
+          posterUrls[`${output.size}_${output.format}`] = output.url;
+        }
+      }
+
+      await mongoStorage.updateMovie(movieId, { 
+        posterPath: posterUrls['medium_webp'] || posterUrls[Object.keys(posterUrls)[0]],
+        posterVariants: posterUrls
+      });
+
+      // Invalidate cache
+      await CacheService.clearCache(`movie:${movieId}`);
+
+      res.json({ 
+        success: true, 
+        message: 'Poster uploaded and optimized successfully',
+        variants: posterUrls
+      });
+    } catch (error) {
+      console.error("Error uploading poster:", error);
+      res.status(500).json({ message: "Failed to upload poster" });
+    }
+  });
+
+  // Performance monitoring endpoint
+  app.get("/api/performance/stats", async (req, res) => {
+    try {
+      const cacheStats = await CacheService.getCacheStats();
+      
+      // Simple performance metrics
+      const performanceStats = {
+        cache: cacheStats,
+        server: {
+          uptime: process.uptime(),
+          memory: process.memoryUsage(),
+          nodeVersion: process.version
+        },
+        timestamp: new Date().toISOString()
+      };
+
+      res.json(performanceStats);
+    } catch (error) {
+      console.error("Error getting performance stats:", error);
+      res.status(500).json({ message: "Failed to get performance stats" });
+    }
+  });
+
+  // Cache management endpoints
+  app.post("/api/cache/clear", authenticateToken, async (req: any, res) => {
+    try {
+      const { pattern } = req.body;
+      
+      if (pattern) {
+        await CacheService.invalidatePattern(pattern);
+        res.json({ success: true, message: `Cleared cache pattern: ${pattern}` });
+      } else {
+        // Clear all cache
+        await CacheService.invalidatePattern('*');
+        res.json({ success: true, message: 'Cleared all cache' });
+      }
+    } catch (error) {
+      console.error("Error clearing cache:", error);
+      res.status(500).json({ message: "Failed to clear cache" });
+    }
+  });
+
+  app.get("/api/cache/test", async (req, res) => {
+    try {
+      const result = await CacheService.testConnection();
+      res.json(result);
+    } catch (error) {
+      console.error("Cache test failed:", error);
+      res.status(500).json({ message: "Cache test failed" });
     }
   });
 

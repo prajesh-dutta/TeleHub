@@ -3,6 +3,7 @@ import { setupVite, serveStatic, log } from "./vite";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
+import PerformanceMonitor, { preloadOptimization, setupCompression, createRateLimit } from "./performance";
 
 // Get the directory name for ES modules
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -17,6 +18,16 @@ console.log('- PORT:', process.env.PORT || '5002');
 console.log('- NODE_ENV:', process.env.NODE_ENV || 'development');
 
 const app = express();
+
+// Performance and optimization middleware
+app.use(PerformanceMonitor.trackPerformance());
+app.use(PerformanceMonitor.setCacheHeaders());
+app.use(preloadOptimization());
+app.use(setupCompression());
+
+// Rate limiting
+app.use('/api/', createRateLimit(15 * 60 * 1000, 100)); // 100 requests per 15 minutes
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
